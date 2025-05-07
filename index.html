@@ -286,19 +286,7 @@
             `).join('');
         }
 
-        function verifyPassword() {
-            const input = document.getElementById('passwordInput').value;
-            const winner = WINNERS_DATA[currentWinner];
-            
-            if(input === winner.password) {
-                closePrompt();
-                createParticles(winner.color.split(' ')[0].replace('from-', '#'));
-                new Audio(winner.sound).play();
-                showRewardPage(winner);
-            } else {
-                alert('⚠️ Accès Refusé! Mot de passe invalide...');
-            }
-        }
+
 
         function closeRewardPage() {
             document.getElementById('rewardPage').classList.add('hidden');
