@@ -80,18 +80,58 @@
     transition: all 0.2s ease-in;
 }
 .notification {
-        @apply fixed top-4 right-4 p-4 rounded-lg text-white transition-all duration-300 transform;
-        opacity: 0;
-        translate: 2rem 0;
-    }
-    .notification.show {
-        opacity: 1;
-        translate: 0;
-    }
-    .notification.error { @apply bg-red-600/90; }
-    .notification.success { @apply bg-emerald-600/90; }
-    .notification.warning { @apply bg-amber-600/90; }
+    position: fixed;
+    top: 1rem;
+    right: -100%;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    color: white;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
 
+.notification.show {
+    right: 1rem;
+}
+
+.notification.error { 
+    background: #dc2626;
+    border-left: 4px solid #991b1b;
+}
+
+.notification.success { 
+    background: #059669;
+    border-left: 4px solid #065f46;
+}
+
+.notification.warning { 
+    background: #d97706;
+    border-left: 4px solid #92400e;
+}
+
+.notification::before {
+    content: '';
+    width: 24px;
+    height: 24px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.notification.error::before {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>');
+}
+
+.notification.success::before {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>');
+}
+
+.notification.warning::before {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>');
+}
     .particle {
     animation: particleFlow 3s linear forwards;
 }
@@ -354,10 +394,12 @@ async function verifyPassword() {
     const verifyBtn = document.getElementById('verifyButton');
     const verifyText = document.getElementById('verifyText');
     const verifySpinner = document.getElementById('verifySpinner');
+    const errorDiv = document.getElementById('passwordError');
 
     verifyBtn.disabled = true;
     verifyText.classList.add('hidden');
     verifySpinner.classList.remove('hidden');
+    errorDiv.classList.add('hidden');
 
     try {
         const response = await fetch('/.netlify/functions/verify-password', {
@@ -365,42 +407,46 @@ async function verifyPassword() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ position: currentWinner, password: input })
         });
-        
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Erreur inconnue');
+        }
+
         const result = await response.json();
         
         if(result.valid) {
             sessionStorage.setItem('validatedPosition', currentWinner);
-        closePrompt();
-        
-      
-        
-        // Délai avant d'afficher la page des récompenses
-
+            closePrompt();
             createParticles(WINNERS_DATA[currentWinner].color.split(' ')[0].replace('from-', '#'));
-              // Nouvel effet de célébration
-        
             new Audio(WINNERS_DATA[currentWinner].sound).play();
             showCelebration(WINNERS_DATA[currentWinner]);
-            showRewardPage(WINNERS_DATA[currentWinner]);
+            
+            setTimeout(() => {
+                showRewardPage(WINNERS_DATA[currentWinner]);
+            }, 2000);
+            
             showNotification('Accès autorisé !', 'success');
-
-         setTimeout(() => {
-            showRewardPage(WINNERS_DATA[currentWinner]);
-        }, 2000);
-        
-    } else {
-            showNotification('Mot de passe incorrect !', 'error');
+        } else {
+            errorDiv.textContent = '⛔ Mot de passe incorrect !';
+            errorDiv.classList.remove('hidden');
+            showNotification('Échec de l\'authentification', 'error');
         }
     } catch (error) {
         console.error('Erreur:', error);
-        showNotification('Erreur de connexion au serveur', 'error');
+        const message = error.message.includes('Failed to fetch') 
+            ? 'Problème de connexion au serveur'
+            : error.message;
+        
+        errorDiv.textContent = `⚠️ ${message}`;
+        errorDiv.classList.remove('hidden');
+        showNotification(message, 'warning');
     } finally {
         verifyBtn.disabled = false;
         verifyText.classList.remove('hidden');
         verifySpinner.classList.add('hidden');
     }
 }
-
 
 // Nouvelle fonction pour l'effet de célébration
 function showCelebration(winner) {
@@ -427,15 +473,17 @@ function showCelebration(winner) {
     // Suppression après l'animation
     setTimeout(() => {
         celebration.remove();
-    }, 1500);
+    }, 3000);
 }
 // Version modifiée de handleRewardClick
-// CORRECTION DE LA FONCTION handleRewardClick
 async function handleRewardClick(downloadKey) {
     const validatedPosition = sessionStorage.getItem('validatedPosition');
-    if (!validatedPosition) return showNotification('Session expirée !', 'error');
+    if (!validatedPosition) {
+        showNotification('Session expirée ! Veuillez vous reconnecter', 'error');
+        return closeRewardDetail();
+    }
     
-    let downloadBtn, originalText; // Déclaration en dehors du bloc try
+    let downloadBtn, originalText;
 
     try {
         downloadBtn = document.querySelector('#rewardDetailModal button');
@@ -445,7 +493,7 @@ async function handleRewardClick(downloadKey) {
             <svg class="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z"/>
             </svg>
-            Chargement...
+            Préparation...
         `;
         downloadBtn.disabled = true;
 
@@ -454,8 +502,12 @@ async function handleRewardClick(downloadKey) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ position: validatedPosition, downloadKey })
         });
-        
-        
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Erreur lors du téléchargement');
+        }
+
         const result = await response.json();
         
         if (result.url) {
@@ -466,18 +518,24 @@ async function handleRewardClick(downloadKey) {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            showNotification('Téléchargement démarré...', 'success');
-        } else {
-            showNotification(result.error || 'Erreur de téléchargement', 'error');
+            
+            downloadBtn.innerHTML = '✅ Téléchargé !';
+            setTimeout(() => {
+                downloadBtn.innerHTML = originalText;
+                downloadBtn.disabled = false;
+            }, 2000);
+            
+            showNotification('Téléchargement démarré', 'success');
         }
     } catch (error) {
         console.error('Erreur:', error);
-        showNotification('Erreur de connexion', 'error');
-    } finally {
-        if (downloadBtn && originalText) { // Vérification ajoutée
+        downloadBtn.innerHTML = '❌ Échec';
+        setTimeout(() => {
             downloadBtn.innerHTML = originalText;
             downloadBtn.disabled = false;
-        }
+        }, 2000);
+        
+        showNotification(error.message, 'error');
     }
 }
 
