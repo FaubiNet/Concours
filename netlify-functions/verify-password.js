@@ -1,6 +1,6 @@
 exports.handler = async (event) => {
     const passwords = {
-        1: "supreme123",
+        1: "kingsupreme123",
         2: "prohacker456", 
         3: "evolve789",
         4: "starter000"

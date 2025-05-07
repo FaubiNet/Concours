@@ -181,6 +181,16 @@
         opacity: 0;
     }
 }
+.pack-preview {
+    border: 2px solid #8b5cf6;
+    border-radius: 1rem;
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.pack-preview:hover {
+    transform: scale(1.02);
+}
     </style>
 </head>
 <body class="min-h-screen text-gray-100 relative">
@@ -612,11 +622,50 @@ let currentDownloadKey = null;
 function showRewardDetail(reward) {
     const modal = document.getElementById('rewardDetailModal');
     const content = document.getElementById('rewardDetailContent');
-    
+    const validatedPosition = sessionStorage.getItem('validatedPosition');
+
     content.querySelector('.text-6xl').innerHTML = reward.icon;
     content.querySelector('h2').textContent = reward.title;
     content.querySelector('p').textContent = reward.description;
+
+    const buttonContainer = content.querySelector('.mt-8.flex.justify-center');
     
+    // Cas spécial pour le premier pack
+    if (validatedPosition === '1' && reward.downloadKey === 'apps-hacking') {
+        buttonContainer.innerHTML = `
+            <div class="text-center w-full">
+                <p class="text-yellow-400 mb-4">⚠️ Ce pack est trop volumineux pour l'upload.<br>
+                Patientez jusqu'à la fin du transfert...<br>
+                (${new Date().toLocaleDateString()})</p>
+                
+                <button onclick="viewPackPreview()" 
+                        class="bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 px-6 py-2 rounded-lg font-bold transition-all">
+                    📸 Voir l'aperçu du pack
+                </button>
+            </div>
+        `;
+    } else {
+        // Dans showRewardDetail
+buttonContainer.innerHTML = `
+    <div class="text-center w-full">
+        <p class="text-yellow-400 mb-4">⚠️ Transfert en cours (75% complété)<br>
+        Estimation: 12h restantes<br>
+        Dernière mise à jour: ${new Date().toLocaleDateString()}</p>
+        
+        <div class="relative pt-1 mb-4">
+            <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                <div style="width:75%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-purple-500 to-pink-500"></div>
+            </div>
+        </div>
+        
+        <button onclick="viewPackPreview()" 
+                class="bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 px-6 py-2 rounded-lg font-bold transition-all">
+            📸 Voir l'aperçu du pack
+        </button>
+    </div>
+`;
+    }
+
     currentDownloadKey = reward.downloadKey;
     modal.classList.remove('hidden');
 }
@@ -626,10 +675,36 @@ function closeRewardDetail() {
     currentDownloadKey = null;
 }
 
+function viewPackPreview() {
+    const previewUrl = "https://i.postimg.cc/rw015B6S/apps-for-hackers.png";
+    const previewWindow = window.open('', 'Aperçu du Pack', 'width=800,height=600');
+    previewWindow.document.write(`
+        <html>
+            <head><title>Aperçu du Pack</title></head>
+            <body style="background: #0a0a0a; display: flex; justify-content: center; align-items: center;">
+                <img src="${previewUrl}" style="max-width: 100%; max-height: 100%; border-radius: 1rem;">
+            </body>
+        </html>
+    `);
+}
+
 async function triggerDownload() {
     if (!currentDownloadKey) return;
-    await handleRewardClick(currentDownloadKey);
-    closeRewardDetail();
+    
+    const validatedPosition = sessionStorage.getItem('validatedPosition');
+    
+    // Vérification spéciale pour le premier pack
+    if (validatedPosition === '1' && currentDownloadKey === 'apps-hacking') {
+        showNotification('🚧 Le transfert est en cours - merci de patienter ! (Estimation: 24h)', 'warning');
+        return;
+    }
+
+    try {
+       await handleRewardClick(currentDownloadKey);
+        closeRewardDetail();
+    } catch (error) {
+        // Gestion d'erreur existante
+    }
 }
 
 

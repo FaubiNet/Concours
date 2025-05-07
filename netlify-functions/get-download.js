@@ -1,7 +1,7 @@
 exports.handler = async (event) => {
     const downloadMap = {
         1: {
-            "apps-hacking": "https://votre-lien-secret.com/apps-hacking.zip",
+            "apps-hacking": "https://www.mediafire.com/file/lz4u8np18fohlm5/Collection_Apps_Hacking.rar/file",
             "python-pdf": "https://www.mediafire.com/file/q2fxpyovzx95gav/Apprendre_Python.rar/file",
             "wifi-course": "https://www.mediafire.com/file/ugi21782gmyla3g/Cours_complet_Hack_Wifi.rar/file",
             "html-css": "https://www.mediafire.com/file/6q5voeb0055jnz2/Cours_HTML-CSS-pdf.rar/file",
@@ -36,6 +36,16 @@ exports.handler = async (event) => {
                 body: JSON.stringify({ error: "Accès non autorisé" })
             };
         }
+        // Juste après avoir récupéré position et downloadKey
+if (parseInt(validatedPosition) === 1 && downloadKey === 'apps-hacking') {
+    return {
+        statusCode: 423,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            error: "Le pack est toujours en cours d'upload - Réessayez dans 24h" 
+        })
+    };
+}
 
         return {
             statusCode: 200,
