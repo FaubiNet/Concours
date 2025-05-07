@@ -28,24 +28,32 @@ exports.handler = async (event) => {
     try {
         const { position, downloadKey } = JSON.parse(event.body);
         const validatedPosition = parseInt(position);
-        
-        if (!downloadMap[validatedPosition] || !downloadMap[validatedPosition][downloadKey]) {
+
+        // Vérification spéciale pour le pack apps-hacking
+        if (validatedPosition === 1 && downloadKey === 'apps-hacking') {
+            return {
+                statusCode: 423,
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*' 
+                },
+                body: JSON.stringify({ 
+                    error: "Le pack est toujours en cours d'upload - Réessayez dans 24h" 
+                })
+            };
+        }
+
+        // Vérification standard
+        if (!downloadMap[validatedPosition]?.[downloadKey]) {
             return {
                 statusCode: 403,
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*' 
+                },
                 body: JSON.stringify({ error: "Accès non autorisé" })
             };
         }
-        // Juste après avoir récupéré position et downloadKey
-if (parseInt(validatedPosition) === 1 && downloadKey === 'apps-hacking') {
-    return {
-        statusCode: 423,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-            error: "Le pack est toujours en cours d'upload - Réessayez dans 24h" 
-        })
-    };
-}
 
         return {
             statusCode: 200,
@@ -60,6 +68,10 @@ if (parseInt(validatedPosition) === 1 && downloadKey === 'apps-hacking') {
     } catch (error) {
         return {
             statusCode: 500,
+            headers: { 
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*' 
+            },
             body: JSON.stringify({ error: "Erreur de serveur" })
         };
     }
