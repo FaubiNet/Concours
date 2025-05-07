@@ -633,9 +633,15 @@ function showRewardDetail(reward) {
     if (validatedPosition === '1' && reward.downloadKey === 'apps-hacking') {
         buttonContainer.innerHTML = `
             <div class="text-center w-full">
-                <p class="text-yellow-400 mb-4">⚠️ Ce pack est trop volumineux pour l'upload.<br>
-                Patientez jusqu'à la fin du transfert...<br>
-                (${new Date().toLocaleDateString()})</p>
+                <p class="text-yellow-400 mb-4 text-sm leading-relaxed">
+    ⚠️ <strong>Bonne nouvelle, tu es éligible à ce pack exclusif complet !</strong><br><br>
+    Cependant, ce pack <strong>"Collection Apps Hacking"</strong> est exceptionnellement volumineux 🚀 car il contient 
+    plusieurs applications puissantes et on ne voulait rien enlever pour t'offrir l'intégralité.<br><br>
+    Le fichier est en cours d'upload sur nos serveurs 🕒, et dès qu'il est prêt tu pourras le télécharger sans problème.<br><br>
+    Nous nous excusons pour cette attente 🙏 mais ton lien sera disponible très bientôt (Estimation: 24h).<br><br>
+    Merci pour ta patience, tu as eu la chance de débloquer ce pack rare 🔥 !
+</p>
+
                 
                 <button onclick="viewPackPreview()" 
                         class="bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 px-6 py-2 rounded-lg font-bold transition-all">

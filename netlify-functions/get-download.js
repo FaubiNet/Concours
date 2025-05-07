@@ -38,8 +38,9 @@ exports.handler = async (event) => {
                     'Access-Control-Allow-Origin': '*' 
                 },
                 body: JSON.stringify({ 
-                    error: "Le pack est toujours en cours d'upload - Réessayez dans 24h" 
+                    error: "📦 Félicitations ! Vous avez débloqué le pack complet 'Collection Apps Hacking'. Cependant, en raison de sa grande taille (beaucoup d'applications incluses), l'upload est toujours en cours. Nous finalisons le transfert pour que vous puissiez le télécharger en totalité. Merci de patienter environ 24h avant de réessayer. 🙏 Votre récompense arrive très bientôt, promis !"
                 })
+                
             };
         }
 
