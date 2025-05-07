@@ -91,7 +91,12 @@
     .notification.error { @apply bg-red-600/90; }
     .notification.success { @apply bg-emerald-600/90; }
     .notification.warning { @apply bg-amber-600/90; }
-
+    
+    .particle {
+    position: absolute;
+    pointer-events: none;
+    z-index: 100;
+}
     
     </style>
 </head>
@@ -201,24 +206,27 @@
     </div>
 
     <!-- Prompt Personnalisé -->
-    <div id="customPrompt" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm">
-        <div class="max-w-xs mx-auto mt-32 bg-gray-900 rounded-xl p-6 animate-pop">
+    <div id="customPrompt" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="bg-gray-900 rounded-xl p-6 w-full max-w-xs mx-4">
             <div class="text-2xl mb-4 text-cyan-400">🔒 Authentification Requise</div>
+            
+            <div id="passwordError" class="text-red-400 text-sm mb-2 hidden"></div>
+            
             <input id="passwordInput" type="password" 
                    class="w-full bg-gray-800 rounded-lg p-3 mb-4 focus:ring-2 focus:ring-cyan-500 outline-none transition-all"
                    placeholder="Mot de passe secret">
+            
             <div class="flex gap-3">
-                <div class="flex gap-3">
-    <button id="verifyButton" onclick="verifyPassword()" 
-            class="flex-1 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:opacity-90 py-2 rounded-lg transition-all flex items-center justify-center">
-        <span id="verifyText">Vérifier</span>
-        <div id="verifySpinner" class="hidden ml-2">
-            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-        </div>
-    </button>
+                <button id="verifyButton" onclick="verifyPassword()" 
+                        class="flex-1 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:opacity-90 py-2 rounded-lg transition-all flex items-center justify-center">
+                    <span id="verifyText">Vérifier</span>
+                    <div id="verifySpinner" class="hidden ml-2">
+                        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                </button>
                 <button onclick="closePrompt()" 
                         class="flex-1 bg-gray-700 hover:bg-gray-600 py-2 rounded-lg transition-all">
                     Annuler
@@ -389,6 +397,22 @@ async function handleRewardClick(downloadKey) {
     }
 }
 
+function createParticles(color) {
+    for(let i = 0; i < 100; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle absolute rounded-full';
+        particle.style.cssText = `
+            left: ${Math.random() * 100}%;
+            width: ${Math.random() * 8 + 2}px;
+            height: ${Math.random() * 8 + 2}px;
+            background: ${color};
+            animation: particleFlow ${Math.random() * 3 + 2}s linear infinite;
+            opacity: ${Math.random() * 0.6 + 0.4};
+        `;
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 5000);
+    }
+}
 
 // AJOUT DE LA FONCTION MANQUANTE
 function handleCardClick(element) {
