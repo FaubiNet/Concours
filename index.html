@@ -91,13 +91,56 @@
     .notification.error { @apply bg-red-600/90; }
     .notification.success { @apply bg-emerald-600/90; }
     .notification.warning { @apply bg-amber-600/90; }
-    
+
     .particle {
-    position: absolute;
-    pointer-events: none;
-    z-index: 100;
+    animation: particleFlow 3s linear forwards;
 }
-    
+
+@keyframes particleFlow {
+    0% { 
+        transform: translateY(0) rotate(0deg); 
+        opacity: 1;
+    }
+    100% { 
+        transform: translateY(100vh) rotate(360deg); 
+        opacity: 0;
+    }
+}
+
+.celebration-explosion {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    text-align: center;
+}
+
+.celebration-text {
+    font-size: 4rem;
+    background: linear-gradient(45deg, #22c55e, #0ea5e9, #8b5cf6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: textPop 1s ease-out;
+}
+
+@keyframes textPop {
+    0% { transform: scale(0); opacity: 0; }
+    80% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes particleExplosion {
+    0% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--translateX), var(--translateY));
+        opacity: 0;
+    }
+}
     </style>
 </head>
 <body class="min-h-screen text-gray-100 relative">
@@ -327,12 +370,25 @@ async function verifyPassword() {
         
         if(result.valid) {
             sessionStorage.setItem('validatedPosition', currentWinner);
-            closePrompt();
+        closePrompt();
+        
+      
+        
+        // Délai avant d'afficher la page des récompenses
+
             createParticles(WINNERS_DATA[currentWinner].color.split(' ')[0].replace('from-', '#'));
+              // Nouvel effet de célébration
+        
             new Audio(WINNERS_DATA[currentWinner].sound).play();
+            showCelebration(WINNERS_DATA[currentWinner]);
             showRewardPage(WINNERS_DATA[currentWinner]);
             showNotification('Accès autorisé !', 'success');
-        } else {
+
+         setTimeout(() => {
+            showRewardPage(WINNERS_DATA[currentWinner]);
+        }, 2000);
+        
+    } else {
             showNotification('Mot de passe incorrect !', 'error');
         }
     } catch (error) {
@@ -345,6 +401,34 @@ async function verifyPassword() {
     }
 }
 
+
+// Nouvelle fonction pour l'effet de célébration
+function showCelebration(winner) {
+    // Création de l'explosion de particules
+    createParticles(winner.color.split(' ')[0].replace('from-', '#'));
+    
+    // Création du message de félicitations
+    const celebration = document.createElement('div');
+    celebration.className = 'celebration-explosion';
+    celebration.innerHTML = `
+        <div class="celebration-text">
+            <div class="text-8xl mb-4">${winner.medal}</div>
+            <h2 class="text-5xl font-bold">Félicitations !</h2>
+            <p class="text-2xl mt-4 text-cyan-400">${winner.name}</p>
+        </div>
+    `;
+    
+    document.body.appendChild(celebration);
+    
+    // Ajout du son de célébration
+    const audio = new Audio(winner.sound);
+    audio.play();
+    
+    // Suppression après l'animation
+    setTimeout(() => {
+        celebration.remove();
+    }, 1500);
+}
 // Version modifiée de handleRewardClick
 // CORRECTION DE LA FONCTION handleRewardClick
 async function handleRewardClick(downloadKey) {
@@ -397,22 +481,45 @@ async function handleRewardClick(downloadKey) {
     }
 }
 
-function createParticles(color) {
-    for(let i = 0; i < 100; i++) {
+function createParticles(baseColor) {
+    const colors = [baseColor, '#0ea5e9', '#8b5cf6'];
+    const container = document.createElement('div');
+    container.style.position = 'fixed';
+    container.style.top = '50%';
+    container.style.left = '50%';
+    container.style.transform = 'translate(-50%, -50%)';
+    container.style.pointerEvents = 'none';
+    document.body.appendChild(container);
+
+    for (let i = 0; i < 100; i++) {
         const particle = document.createElement('div');
-        particle.className = 'particle absolute rounded-full';
+        const angle = (Math.random() * 360) * (Math.PI / 180);
+        const velocity = Math.random() * 50 + 50;
+        
+        particle.className = 'particle';
         particle.style.cssText = `
-            left: ${Math.random() * 100}%;
-            width: ${Math.random() * 8 + 2}px;
-            height: ${Math.random() * 8 + 2}px;
-            background: ${color};
-            animation: particleFlow ${Math.random() * 3 + 2}s linear infinite;
-            opacity: ${Math.random() * 0.6 + 0.4};
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: ${colors[i % 3]};
+            border-radius: 50%;
+            animation: particleExplosion 1s ease-out forwards;
+            --translateX: ${Math.cos(angle) * velocity}vw;
+            --translateY: ${Math.sin(angle) * velocity}vh;
         `;
-        document.body.appendChild(particle);
-        setTimeout(() => particle.remove(), 5000);
+        
+        container.appendChild(particle);
+
+        particle.addEventListener('animationend', () => {
+            particle.remove();
+            if (!container.hasChildNodes()) {
+                container.remove();
+            }
+        });
     }
 }
+
+
 
 // AJOUT DE LA FONCTION MANQUANTE
 function handleCardClick(element) {
