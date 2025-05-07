@@ -60,6 +60,25 @@
             90% { transform: scale(1.1); }
             100% { transform: scale(1); opacity: 1; }
         }
+
+        .reward-detail-enter {
+    opacity: 0;
+    transform: scale(0.95);
+}
+.reward-detail-enter-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: all 0.3s ease-out;
+}
+.reward-detail-exit {
+    opacity: 1;
+    transform: scale(1);
+}
+.reward-detail-exit-active {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: all 0.2s ease-in;
+}
     </style>
 </head>
 <body class="min-h-screen text-gray-100 relative">
@@ -140,6 +159,29 @@
             </div>
             <div id="rewardsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
         </div>
+
+        <!-- Modale de Détail des Récompenses -->
+<div id="rewardDetailModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm z-50 overflow-y-auto">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-2xl max-w-2xl w-full p-8 relative">
+            <button onclick="closeRewardDetail()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                ✕
+            </button>
+            
+            <div id="rewardDetailContent" class="space-y-6">
+                <div class="text-6xl mb-4 text-center"></div>
+                <h2 class="text-3xl font-bold text-center"></h2>
+                <p class="text-gray-300 text-lg leading-relaxed"></p>
+                <div class="mt-8 flex justify-center">
+                    <button onclick="triggerDownload()" 
+                            class="bg-gradient-to-r from-cyan-600 to-emerald-600 hover:opacity-90 px-8 py-3 rounded-lg font-bold transition-all">
+                        Télécharger
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     </div>
 
     <!-- Prompt Personnalisé -->
@@ -310,16 +352,42 @@
             document.getElementById('celebrationTitle').style.webkitBackgroundClip = 'text';
             document.getElementById('celebrationTitle').style.webkitTextFillColor = 'transparent';
 
-            const grid = document.getElementById('rewardsGrid');
-            grid.innerHTML = winner.rewards.map((reward, index) => `
-                <div class="reward-card p-6 rounded-xl transform transition-all hover:scale-[1.02] delay-${index * 100}">
-                    <div class="text-4xl mb-3">${reward.icon}</div>
-                    <h3 class="text-xl font-bold mb-2" style="color: ${winner.color.split(' ')[0].replace('from-', '#')}">${reward.title}</h3>
-                    <p class="text-gray-300 text-sm">${reward.description}</p>
-                </div>
-            `).join('');
-        }
+             const grid = document.getElementById('rewardsGrid');
+    grid.innerHTML = winner.rewards.map((reward, index) => `
+        <div class="reward-card p-6 rounded-xl transform transition-all hover:scale-[1.02] delay-${index * 100} cursor-pointer"
+             onclick="showRewardDetail(${JSON.stringify(reward).replace(/"/g, '&quot;')})">
+            <div class="text-4xl mb-3">${reward.icon}</div>
+            <h3 class="text-xl font-bold mb-2" style="color: ${winner.color.split(' ')[0].replace('from-', '#')}">${reward.title}</h3>
+            <p class="text-gray-300 text-sm">${reward.description}</p>
+        </div>
+    `).join('');
+}
 
+
+let currentDownloadKey = null;
+
+function showRewardDetail(reward) {
+    const modal = document.getElementById('rewardDetailModal');
+    const content = document.getElementById('rewardDetailContent');
+    
+    content.querySelector('.text-6xl').innerHTML = reward.icon;
+    content.querySelector('h2').textContent = reward.title;
+    content.querySelector('p').textContent = reward.description;
+    
+    currentDownloadKey = reward.downloadKey;
+    modal.classList.remove('hidden');
+}
+
+function closeRewardDetail() {
+    document.getElementById('rewardDetailModal').classList.add('hidden');
+    currentDownloadKey = null;
+}
+
+async function triggerDownload() {
+    if (!currentDownloadKey) return;
+    await handleRewardClick(currentDownloadKey);
+    closeRewardDetail();
+}
 
 
         function closeRewardPage() {
