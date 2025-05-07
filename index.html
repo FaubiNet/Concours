@@ -79,6 +79,20 @@
     transform: scale(0.95);
     transition: all 0.2s ease-in;
 }
+.notification {
+        @apply fixed top-4 right-4 p-4 rounded-lg text-white transition-all duration-300 transform;
+        opacity: 0;
+        translate: 2rem 0;
+    }
+    .notification.show {
+        opacity: 1;
+        translate: 0;
+    }
+    .notification.error { @apply bg-red-600/90; }
+    .notification.success { @apply bg-emerald-600/90; }
+    .notification.warning { @apply bg-amber-600/90; }
+
+    
     </style>
 </head>
 <body class="min-h-screen text-gray-100 relative">
@@ -142,6 +156,8 @@
                 </div>
             </div>
         </div>
+        <div id="notification" class="notification hidden"></div>
+
     </main>
 
       <!-- Page de Récompenses -->
@@ -192,10 +208,17 @@
                    class="w-full bg-gray-800 rounded-lg p-3 mb-4 focus:ring-2 focus:ring-cyan-500 outline-none transition-all"
                    placeholder="Mot de passe secret">
             <div class="flex gap-3">
-                <button onclick="verifyPassword()" 
-                        class="flex-1 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:opacity-90 py-2 rounded-lg transition-all">
-                    Vérifier
-                </button>
+                <div class="flex gap-3">
+    <button id="verifyButton" onclick="verifyPassword()" 
+            class="flex-1 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:opacity-90 py-2 rounded-lg transition-all flex items-center justify-center">
+        <span id="verifyText">Vérifier</span>
+        <div id="verifySpinner" class="hidden ml-2">
+            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+        </div>
+    </button>
                 <button onclick="closePrompt()" 
                         class="flex-1 bg-gray-700 hover:bg-gray-600 py-2 rounded-lg transition-all">
                     Annuler
@@ -211,12 +234,12 @@
                 name: "1er Gagnant",
                 color: "from-amber-500 to-yellow-500",
                 rewards: [
-                    { title: "Collection Apps Hacking", icon: "💻", description: "...", downloadKey: "apps-hacking" },
-                    { title: "Piratage par Image", icon: "🖼️", description: "...", downloadKey: "image-hack" },
-                    { title: "PDF Python", icon: "📖", description: "...", downloadKey: "python-pdf" },
-                    { title: "Cours Hacking WiFi", icon: "📶", description: "...", downloadKey: "wifi-course" },
-                    { title: "PDF HTML/CSS", icon: "📚", description: "...", downloadKey: "html-css" },
-                    { title: "Astuces IA", icon: "🤖", description: "...", downloadKey: "ia-tips" }
+                    { title: "Collection Apps Hacking", icon: "💻", description: "Apps piratage WiFi, terminal Android, spying, DDoS, crypto", downloadKey: "apps-hacking" },
+                    { title: "Piratage par Image", icon: "🖼️", description: "Procédure complète piratage via envoi d'image", downloadKey: "image-hack" },
+                    { title: "PDF Python", icon: "📖", description: "Livres complets Python étape par étape", downloadKey: "python-pdf" },
+                    { title: "Cours Hacking WiFi", icon: "📶", description: "Méthodes avancées de piratage WiFi", downloadKey: "wifi-course" },
+                    { title: "PDF HTML/CSS", icon: "📚", description: "Guides détaillés développement web", downloadKey: "html-css" },
+                    { title: "Astuces IA", icon: "🤖", description: "Création avatars/vidéos rémunératrices", downloadKey: "ia-tips" }
                 ],
                 sound: "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3",
                 medal: "🥇"
@@ -225,9 +248,10 @@
                 name: "2e Gagnant",
                 color: "from-slate-500 to-blue-500",
                 rewards: [
-                    { title: "Psychologie Manipulation", icon: "🧠", description: "Apprendre à influencer et manipuler les gens" },
-                    { title: "PDF Python/HTML/CSS", icon: "📘", description: "Coffret complet langages programmation" },
-                    { title: "Création Avatars IA", icon: "🎭", description: "Guide complet avatars animés avec IA" }
+                    { title: "Psychologie Manipulation", icon: "🧠", description: "Apprendre à influencer et manipuler les gens", downloadKey: "psycho-manip" },
+                    { title: "PDF Python/HTML/CSS", icon: "📘", description: "Coffret complet langages programmation", downloadKey: "langages-pack" },
+                    { title: "Création Avatars IA", icon: "🎭", description: "Guide complet avatars animés avec IA", downloadKey: "avatars-ia" }
+            
                 ],
                 sound: "https://assets.mixkit.co/active_storage/sfx/2754/2754-preview.mp3",
                 medal: "🥈"
@@ -236,9 +260,9 @@
                 name: "3e Gagnant",
                 color: "from-orange-500 to-red-500",
                 rewards: [
-                    { title: "PDF HTML/CSS", icon: "📑", description: "Documentation technique détaillée" },
-                    { title: "Liste Brute Force", icon: "🔑", description: "Dictionnaire de mots de passe optimisés" },
-                    { title: "Android Root Guide", icon: "📱", description: "Hacking complet avec Android rooté" }
+                    { title: "PDF HTML/CSS", icon: "📑", description: "Documentation technique détaillée", downloadKey: "html-css-docs"  },
+                    { title: "Liste Brute Force", icon: "🔑", description: "Dictionnaire de mots de passe optimisés", downloadKey: "brute-force-list" },
+                    { title: "Android Root Guide", icon: "📱", description: "Hacking complet avec Android rooté", downloadKey: "android-root" }
                 ],
                 sound: "https://assets.mixkit.co/active_storage/sfx/2755/2755-preview.mp3",
                 medal: "🥉"
@@ -247,9 +271,9 @@
                 name: "4e Gagnant",
                 color: "from-green-500 to-emerald-500",
                 rewards: [
-                    { title: "Terminal + Crypto Apps", icon: "📲", description: "Outils Android essentiels" },
-                    { title: "Mini Guide Photoshop", icon: "🖌️", description: "Bases du montage photo pro" },
-                    { title: "WiFi Débutant", icon: "📡", description: "Introduction au hacking WiFi" }
+                    { title: "Terminal + Crypto Apps", icon: "📲", description: "Outils Android essentiels", downloadKey: "terminal-apps" },
+                    { title: "Mini Guide Photoshop", icon: "🖌️", description: "Bases du montage photo pro", downloadKey: "photoshop-guide" },
+                    { title: "WiFi Débutant", icon: "📡", description: "Introduction au hacking WiFi" , downloadKey: "wifi-debutant"}
                 ],
                 sound: "https://assets.mixkit.co/active_storage/sfx/2753/2753-preview.mp3",
                 medal: "🏅"
@@ -260,87 +284,117 @@
 
         let currentWinner;
 
-        async function verifyPassword() {
-            const input = document.getElementById('passwordInput').value;
-            try {
-                const response = await fetch('/.netlify/functions/verify-password', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ position: currentWinner, password: input })
-                });
-                
-                const result = await response.json();
-                
-                if(result.valid) {
-                    sessionStorage.setItem('validatedPosition', currentWinner);
-                    closePrompt();
-                    createParticles(WINNERS_DATA[currentWinner].color.split(' ')[0].replace('from-', '#'));
-                    new Audio(WINNERS_DATA[currentWinner].sound).play();
-                    showRewardPage(WINNERS_DATA[currentWinner]);
-                } else {
-                    alert('⚠️ Accès Refusé! Mot de passe invalide...');
-                }
-            } catch (error) {
-                console.error('Erreur:', error);
-                alert('Erreur de connexion au serveur');
-            }
-        }
+        // Fonction de notification
+function showNotification(message, type = 'info') {
+    const notification = document.getElementById('notification');
+    notification.className = `notification ${type} show`;
+    notification.textContent = message;
+    notification.classList.remove('hidden');
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.classList.add('hidden'), 300);
+    }, 3000);
+}
 
-        async function handleRewardClick(downloadKey) {
-            const validatedPosition = sessionStorage.getItem('validatedPosition');
-            if (!validatedPosition) return alert('Session invalide !');
-            
-            try {
-                const response = await fetch('/.netlify/functions/get-download', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        position: validatedPosition,
-                        downloadKey 
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (result.url) {
-                    const link = document.createElement('a');
-                    link.href = result.url;
-                    link.download = true;
-                    link.style.display = 'none';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                } else {
-                    alert('Erreur: ' + (result.error || 'Téléchargement impossible'));
-                }
-            } catch (error) {
-                console.error('Erreur:', error);
-                alert('Erreur de connexion au serveur');
-            }
+// Version modifiée de verifyPassword
+async function verifyPassword() {
+    const input = document.getElementById('passwordInput').value;
+    const verifyBtn = document.getElementById('verifyButton');
+    const verifyText = document.getElementById('verifyText');
+    const verifySpinner = document.getElementById('verifySpinner');
+
+    verifyBtn.disabled = true;
+    verifyText.classList.add('hidden');
+    verifySpinner.classList.remove('hidden');
+
+    try {
+        const response = await fetch('/.netlify/functions/verify-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ position: currentWinner, password: input })
+        });
+        
+        const result = await response.json();
+        
+        if(result.valid) {
+            sessionStorage.setItem('validatedPosition', currentWinner);
+            closePrompt();
+            createParticles(WINNERS_DATA[currentWinner].color.split(' ')[0].replace('from-', '#'));
+            new Audio(WINNERS_DATA[currentWinner].sound).play();
+            showRewardPage(WINNERS_DATA[currentWinner]);
+            showNotification('Accès autorisé !', 'success');
+        } else {
+            showNotification('Mot de passe incorrect !', 'error');
         }
+    } catch (error) {
+        console.error('Erreur:', error);
+        showNotification('Erreur de connexion au serveur', 'error');
+    } finally {
+        verifyBtn.disabled = false;
+        verifyText.classList.remove('hidden');
+        verifySpinner.classList.add('hidden');
+    }
+}
+
+// Version modifiée de handleRewardClick
+// CORRECTION DE LA FONCTION handleRewardClick
+async function handleRewardClick(downloadKey) {
+    const validatedPosition = sessionStorage.getItem('validatedPosition');
+    if (!validatedPosition) return showNotification('Session expirée !', 'error');
+    
+    let downloadBtn, originalText; // Déclaration en dehors du bloc try
+
+    try {
+        downloadBtn = document.querySelector('#rewardDetailModal button');
+        originalText = downloadBtn.innerHTML;
+        
+        downloadBtn.innerHTML = `
+            <svg class="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z"/>
+            </svg>
+            Chargement...
+        `;
+        downloadBtn.disabled = true;
+
+        const response = await fetch('/.netlify/functions/get-download', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ position: validatedPosition, downloadKey })
+        });
+        
+        
+        const result = await response.json();
+        
+        if (result.url) {
+            const link = document.createElement('a');
+            link.href = result.url;
+            link.download = true;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showNotification('Téléchargement démarré...', 'success');
+        } else {
+            showNotification(result.error || 'Erreur de téléchargement', 'error');
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        showNotification('Erreur de connexion', 'error');
+    } finally {
+        if (downloadBtn && originalText) { // Vérification ajoutée
+            downloadBtn.innerHTML = originalText;
+            downloadBtn.disabled = false;
+        }
+    }
+}
 
 
-        function handleCardClick(element) {
-            currentWinner = element.dataset.position;
-            showCustomPrompt();
-        }
-
-        function createParticles(color) {
-            for(let i = 0; i < 100; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle absolute rounded-full';
-                particle.style.cssText = `
-                    left: ${Math.random() * 100}%;
-                    width: ${Math.random() * 8 + 2}px;
-                    height: ${Math.random() * 8 + 2}px;
-                    background: ${color};
-                    animation: particleFlow ${Math.random() * 3 + 2}s linear infinite;
-                    opacity: ${Math.random() * 0.6 + 0.4};
-                `;
-                document.body.appendChild(particle);
-                setTimeout(() => particle.remove(), 5000);
-            }
-        }
+// AJOUT DE LA FONCTION MANQUANTE
+function handleCardClick(element) {
+    currentWinner = element.dataset.position;
+    showCustomPrompt();
+}
 
         function showRewardPage(winner) {
             document.getElementById('mainPage').classList.add('hidden');
