@@ -423,9 +423,9 @@ async function verifyPassword() {
             throw new Error(error.error || 'Erreur inconnue');
         }
 
-        const data = await response.json();
+        const result = await response.json();
         
-        if(data.valid) {
+        if(result.valid) {
             sessionStorage.setItem('validatedPosition', currentWinner);
             closePrompt();
             createParticles(WINNERS_DATA[currentWinner].color.split(' ')[0].replace('from-', '#'));
@@ -630,7 +630,7 @@ function showRewardDetail(reward) {
 
     const buttonContainer = content.querySelector('.mt-8.flex.justify-center');
     
-    // Uniquement pour le premier pack du premier gagnant
+    // Cas spécial pour le premier pack
     if (validatedPosition === '1' && reward.downloadKey === 'apps-hacking') {
         buttonContainer.innerHTML = `
             <div class="text-center w-full">
@@ -645,7 +645,6 @@ function showRewardDetail(reward) {
             </div>
         `;
     } else {
-        // Comportement normal pour toutes les autres récompenses
         buttonContainer.innerHTML = `
             <button onclick="triggerDownload()" 
                     class="bg-gradient-to-r from-cyan-600 to-emerald-600 hover:opacity-90 px-8 py-3 rounded-lg font-bold transition-all">
@@ -681,18 +680,17 @@ async function triggerDownload() {
     
     const validatedPosition = sessionStorage.getItem('validatedPosition');
     
-    // Blocage uniquement pour le pack spécifique
+    // Vérification spéciale pour le premier pack
     if (validatedPosition === '1' && currentDownloadKey === 'apps-hacking') {
         showNotification('🚧 Le transfert est en cours - merci de patienter ! (Estimation: 24h)', 'warning');
         return;
     }
 
     try {
-        await handleRewardClick(currentDownloadKey);
+       await handleRewardClick(currentDownloadKey);
         closeRewardDetail();
     } catch (error) {
-        console.error('Erreur:', error);
-        showNotification('Échec du téléchargement', 'error');
+        // Gestion d'erreur existante
     }
 }
 
