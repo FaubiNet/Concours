@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackers Academy - Hall of Fame</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cyber-gradient: linear-gradient(45deg, #22c55e, #0ea5e9, #8b5cf6);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            overflow-x: hidden;
+        }
+
+        .cyber-glow {
+            animation: cyberGlow 2s infinite alternate;
+        }
+
+        @keyframes cyberGlow {
+            0% { filter: drop-shadow(0 0 5px rgba(14, 165, 233, 0.3)); }
+            100% { filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.6)); }
+        }
+
+        .winner-card {
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            background: linear-gradient(145deg, #111111, #1e1e1e);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .winner-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(34, 197, 94, 0.15);
+        }
+
+        .particle {
+            animation: particleFlow 3s linear infinite;
+        }
+
+        @keyframes particleFlow {
+            0% { transform: translateY(-100%) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        .reward-card {
+            transition: all 0.3s ease;
+            background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+        }
+
+        .animate-pop {
+            animation: popIn 0.6s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            90% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="min-h-screen text-gray-100 relative">
+    <!-- Page Principale -->
+    <main id="mainPage" class="container mx-auto px-4 py-8 md:py-12">
+        <h1 class="text-3xl md:text-4xl font-bold mb-12 text-center cyber-glow">
+            🔥 Top Hackers 2024
+            <div class="mt-3 h-1 bg-gradient-to-r from-purple-500 to-cyan-500 w-20 mx-auto rounded-full"></div>
+        </h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <!-- Gagnant 1 -->
+            <div class="winner-card p-6 rounded-xl cursor-pointer relative overflow-hidden group" 
+                 data-position="1" 
+                 onclick="handleCardClick(this)">
+                <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="text-5xl mb-3 animate-pulse">👑</div>
+                <h3 class="text-xl font-bold mb-1">CyberPhantom</h3>
+                <p class="text-cyan-400 font-mono text-sm">24K points</p>
+                <div class="mt-3 opacity-80 group-hover:opacity-100 transition-opacity">
+                    <span class="text-xs text-gray-400">Cliquez pour déverrouiller</span>
+                </div>
+            </div>
+
+            <!-- Gagnant 2 -->
+            <div class="winner-card p-6 rounded-xl cursor-pointer relative overflow-hidden group" 
+                 data-position="2" 
+                 onclick="handleCardClick(this)">
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="text-5xl mb-3 animate-pulse">💻</div>
+                <h3 class="text-xl font-bold mb-1">CodeBreaker</h3>
+                <p class="text-emerald-400 font-mono text-sm">22K points</p>
+                <div class="mt-3 opacity-80 group-hover:opacity-100 transition-opacity">
+                    <span class="text-xs text-gray-400">Cliquez pour déverrouiller</span>
+                </div>
+            </div>
+
+            <!-- Gagnant 3 -->
+            <div class="winner-card p-6 rounded-xl cursor-pointer relative overflow-hidden group" 
+                 data-position="3" 
+                 onclick="handleCardClick(this)">
+                <div class="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="text-5xl mb-3 animate-pulse">🎯</div>
+                <h3 class="text-xl font-bold mb-1">ZeroDay</h3>
+                <p class="text-purple-400 font-mono text-sm">20K points</p>
+                <div class="mt-3 opacity-80 group-hover:opacity-100 transition-opacity">
+                    <span class="text-xs text-gray-400">Cliquez pour déverrouiller</span>
+                </div>
+            </div>
+
+            <!-- Gagnant 4 -->
+            <div class="winner-card p-6 rounded-xl cursor-pointer relative overflow-hidden group" 
+                 data-position="4" 
+                 onclick="handleCardClick(this)">
+                <div class="absolute inset-0 bg-gradient-to-br from-yellow-500/20 to-red-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="text-5xl mb-3 animate-pulse">🛡️</div>
+                <h3 class="text-xl font-bold mb-1">ShadowHawk</h3>
+                <p class="text-yellow-400 font-mono text-sm">19K points</p>
+                <div class="mt-3 opacity-80 group-hover:opacity-100 transition-opacity">
+                    <span class="text-xs text-gray-400">Cliquez pour déverrouiller</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Page de Récompenses -->
+    <div id="rewardPage" class="hidden fixed inset-0 bg-gray-900 p-4 md:p-8 overflow-y-auto">
+        <div class="max-w-4xl mx-auto">
+            <button onclick="closeRewardPage()" class="mb-8 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
+                ← Retour au Hall
+            </button>
+            
+            <div id="rewardHeader" class="text-center mb-12 animate-pop">
+                <div id="celebrationEmoji" class="text-8xl mb-6"></div>
+                <h2 id="celebrationTitle" class="text-4xl font-bold mb-4"></h2>
+                <div id="celebrationSubtitle" class="text-xl text-gray-400">
+                    Vous avez débloqué le niveau ultime !
+                </div>
+            </div>
+
+            <div id="rewardsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </div>
+    </div>
+
+    <!-- Prompt Personnalisé -->
+    <div id="customPrompt" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm">
+        <div class="max-w-xs mx-auto mt-32 bg-gray-900 rounded-xl p-6 animate-pop">
+            <div class="text-2xl mb-4 text-cyan-400">🔒 Authentification Requise</div>
+            <input id="passwordInput" type="password" 
+                   class="w-full bg-gray-800 rounded-lg p-3 mb-4 focus:ring-2 focus:ring-cyan-500 outline-none transition-all"
+                   placeholder="Mot de passe secret">
+            <div class="flex gap-3">
+                <button onclick="verifyPassword()" 
+                        class="flex-1 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:opacity-90 py-2 rounded-lg transition-all">
+                    Vérifier
+                </button>
+                <button onclick="closePrompt()" 
+                        class="flex-1 bg-gray-700 hover:bg-gray-600 py-2 rounded-lg transition-all">
+                    Annuler
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const WINNERS_DATA = {
+            1: {
+                name: "1er Gagnant",
+                color: "from-amber-500 to-yellow-500",
+                rewards: [
+                    { title: "Collection Apps Hacking", icon: "💻", description: "Apps piratage WiFi, terminal Android, spying, DDoS, crypto" },
+                    { title: "Piratage par Image", icon: "🖼️", description: "Procédure complète piratage via envoi d'image" },
+                    { title: "PDF Python Maîtrise Totale", icon: "📖", description: "Livres complets Python étape par étape" },
+                    { title: "Cours Hacking WiFi", icon: "📶", description: "Méthodes avancées de piratage WiFi" },
+                    { title: "PDF HTML/CSS", icon: "📚", description: "Guides détaillés développement web" },
+                    { title: "Astuces IA Créative", icon: "🤖", description: "Création avatars/vidéos rémunératrices" }
+                ],
+                sound: "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3",
+                medal: "🥇"
+            },
+            2: {
+                name: "2e Gagnant",
+                color: "from-slate-500 to-blue-500",
+                rewards: [
+                    { title: "Psychologie Manipulation", icon: "🧠", description: "Apprendre à influencer et manipuler les gens" },
+                    { title: "PDF Python/HTML/CSS", icon: "📘", description: "Coffret complet langages programmation" },
+                    { title: "Création Avatars IA", icon: "🎭", description: "Guide complet avatars animés avec IA" }
+                ],
+                sound: "https://assets.mixkit.co/active_storage/sfx/2754/2754-preview.mp3",
+                medal: "🥈"
+            },
+            3: {
+                name: "3e Gagnant",
+                color: "from-orange-500 to-red-500",
+                rewards: [
+                    { title: "PDF HTML/CSS", icon: "📑", description: "Documentation technique détaillée" },
+                    { title: "Liste Brute Force", icon: "🔑", description: "Dictionnaire de mots de passe optimisés" },
+                    { title: "Android Root Guide", icon: "📱", description: "Hacking complet avec Android rooté" }
+                ],
+                sound: "https://assets.mixkit.co/active_storage/sfx/2755/2755-preview.mp3",
+                medal: "🥉"
+            },
+            4: {
+                name: "4e Gagnant",
+                color: "from-green-500 to-emerald-500",
+                rewards: [
+                    { title: "Terminal + Crypto Apps", icon: "📲", description: "Outils Android essentiels" },
+                    { title: "Mini Guide Photoshop", icon: "🖌️", description: "Bases du montage photo pro" },
+                    { title: "WiFi Débutant", icon: "📡", description: "Introduction au hacking WiFi" }
+                ],
+                sound: "https://assets.mixkit.co/active_storage/sfx/2753/2753-preview.mp3",
+                medal: "🏅"
+            }
+        };
+
+        async function verifyPassword() {
+        const input = document.getElementById('passwordInput').value;
+        const winner = WINNERS_DATA[currentWinner];
+        
+        try {
+          const response = await fetch('/.netlify/functions/verify-password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ position: currentWinner, password: input })
+});
+            
+            const result = await response.json();
+            
+            if(result.valid) {
+                closePrompt();
+                createParticles(winner.color.split(' ')[0].replace('from-', '#'));
+                new Audio(winner.sound).play();
+                showRewardPage(winner);
+            } else {
+                alert('⚠️ Accès Refusé! Mot de passe invalide...');
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            alert('Erreur de connexion au serveur');
+        }
+    }
+
+        let currentWinner;
+
+        function handleCardClick(element) {
+            currentWinner = element.dataset.position;
+            showCustomPrompt();
+        }
+
+        function createParticles(color) {
+            for(let i = 0; i < 100; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle absolute rounded-full';
+                particle.style.cssText = `
+                    left: ${Math.random() * 100}%;
+                    width: ${Math.random() * 8 + 2}px;
+                    height: ${Math.random() * 8 + 2}px;
+                    background: ${color};
+                    animation: particleFlow ${Math.random() * 3 + 2}s linear infinite;
+                    opacity: ${Math.random() * 0.6 + 0.4};
+                `;
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 5000);
+            }
+        }
+
+        function showRewardPage(winner) {
+            document.getElementById('mainPage').classList.add('hidden');
+            document.getElementById('rewardPage').classList.remove('hidden');
+            
+            document.getElementById('celebrationEmoji').textContent = winner.medal;
+            document.getElementById('celebrationTitle').textContent = `Félicitations ${winner.name}!`;
+            document.getElementById('celebrationTitle').style.background = `linear-gradient(45deg, ${winner.color.replace('from-', '').replace('to-', '').replace(/ /g, ', ')})`;
+            document.getElementById('celebrationTitle').style.webkitBackgroundClip = 'text';
+            document.getElementById('celebrationTitle').style.webkitTextFillColor = 'transparent';
+
+            const grid = document.getElementById('rewardsGrid');
+            grid.innerHTML = winner.rewards.map((reward, index) => `
+                <div class="reward-card p-6 rounded-xl transform transition-all hover:scale-[1.02] delay-${index * 100}">
+                    <div class="text-4xl mb-3">${reward.icon}</div>
+                    <h3 class="text-xl font-bold mb-2" style="color: ${winner.color.split(' ')[0].replace('from-', '#')}">${reward.title}</h3>
+                    <p class="text-gray-300 text-sm">${reward.description}</p>
+                </div>
+            `).join('');
+        }
+
+        function verifyPassword() {
+            const input = document.getElementById('passwordInput').value;
+            const winner = WINNERS_DATA[currentWinner];
+            
+            if(input === winner.password) {
+                closePrompt();
+                createParticles(winner.color.split(' ')[0].replace('from-', '#'));
+                new Audio(winner.sound).play();
+                showRewardPage(winner);
+            } else {
+                alert('⚠️ Accès Refusé! Mot de passe invalide...');
+            }
+        }
+
+        function closeRewardPage() {
+            document.getElementById('rewardPage').classList.add('hidden');
+            document.getElementById('mainPage').classList.remove('hidden');
+            document.querySelectorAll('.particle').forEach(p => p.remove());
+        }
+
+        function showCustomPrompt() {
+            document.getElementById('customPrompt').classList.remove('hidden');
+        }
+
+        function closePrompt() {
+            document.getElementById('customPrompt').classList.add('hidden');
+            document.getElementById('passwordInput').value = '';
+        }
+    </script>
+</body>
+</html>

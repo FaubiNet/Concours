@@ -1,0 +1,19 @@
+{
+	"geolocation": {
+		"data": {
+			"city": "Kampala",
+			"country": {
+				"code": "UG",
+				"name": "Uganda"
+			},
+			"subdivision": {
+				"code": "C",
+				"name": "Central Region"
+			},
+			"timezone": "Africa/Kampala",
+			"latitude": 0.321,
+			"longitude": 32.5714
+		},
+		"timestamp": 1746629047949
+	}
+}
