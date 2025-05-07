@@ -411,19 +411,19 @@ async function verifyPassword() {
     verifySpinner.classList.remove('hidden');
     errorDiv.classList.add('hidden');
 
-    try {
+     try {
         const response = await fetch('/.netlify/functions/verify-password', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ position: currentWinner, password: input })
         });
 
+        const data = await response.json();
+        
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Erreur inconnue');
+            throw new Error(data.error || 'Erreur de vérification');
         }
 
-        const result = await response.json();
         
         if(result.valid) {
             sessionStorage.setItem('validatedPosition', currentWinner);
