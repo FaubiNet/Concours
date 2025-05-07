@@ -418,14 +418,13 @@ async function verifyPassword() {
             body: JSON.stringify({ position: currentWinner, password: input })
         });
 
+        const data = await response.json(); // Lecture unique
+
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Erreur inconnue');
+            throw new Error(data.error || 'Erreur serveur');
         }
 
-        const result = await response.json();
-        
-        if(result.valid) {
+        if(data.valid) {
             sessionStorage.setItem('validatedPosition', currentWinner);
             closePrompt();
             createParticles(WINNERS_DATA[currentWinner].color.split(' ')[0].replace('from-', '#'));
@@ -630,7 +629,7 @@ function showRewardDetail(reward) {
 
     const buttonContainer = content.querySelector('.mt-8.flex.justify-center');
     
-    // Cas spécial pour le premier pack
+    // Uniquement pour le premier pack du premier gagnant
     if (validatedPosition === '1' && reward.downloadKey === 'apps-hacking') {
         buttonContainer.innerHTML = `
             <div class="text-center w-full">
@@ -645,6 +644,7 @@ function showRewardDetail(reward) {
             </div>
         `;
     } else {
+        // Comportement normal pour toutes les autres récompenses
         buttonContainer.innerHTML = `
             <button onclick="triggerDownload()" 
                     class="bg-gradient-to-r from-cyan-600 to-emerald-600 hover:opacity-90 px-8 py-3 rounded-lg font-bold transition-all">
@@ -680,17 +680,18 @@ async function triggerDownload() {
     
     const validatedPosition = sessionStorage.getItem('validatedPosition');
     
-    // Vérification spéciale pour le premier pack
+    // Blocage uniquement pour le pack spécifique
     if (validatedPosition === '1' && currentDownloadKey === 'apps-hacking') {
         showNotification('🚧 Le transfert est en cours - merci de patienter ! (Estimation: 24h)', 'warning');
         return;
     }
 
     try {
-       await handleRewardClick(currentDownloadKey);
+        await handleRewardClick(currentDownloadKey);
         closeRewardDetail();
     } catch (error) {
-        // Gestion d'erreur existante
+        console.error('Erreur:', error);
+        showNotification('Échec du téléchargement', 'error');
     }
 }
 
