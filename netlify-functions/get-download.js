@@ -9,8 +9,8 @@ exports.handler = async (event) => {
             "image-hack": "https://www.mediafire.com/file/fp958ec40ltoemh/Hack_Avec_Image.rar/file"
         },
         2: {
-            "psycho-manip": "https://www.mediafire.com/file/4srrzwhehej12m0/Cours_Python-HTML-CSS-pdf.rar/file",
-            "langages-pack": "https://www.mediafire.com/file/5x6siw6mgg10efe/Psychologie_Manipulation.rar/file",
+            "psycho-manip": "https://www.mediafire.com/file/5x6siw6mgg10efe/Psychologie_Manipulation.rar/file",
+            "langages-pack": "https://www.mediafire.com/file/4srrzwhehej12m0/Cours_Python-HTML-CSS-pdf.rar/file",
             "avatars-ia": "https://www.mediafire.com/file/p5ghi0aqae0mvsh/Astuces_IA_Cr%25C3%25A9ative.rar/file"
         },
         3: {

@@ -388,13 +388,30 @@
         // Fonction de notification
 function showNotification(message, type = 'info') {
     const notification = document.getElementById('notification');
-    notification.className = `notification ${type} show`;
+    
+    // Annuler les précédentes animations
+    notification.style.transition = 'none';
+    notification.classList.remove('show', 'hidden');
+    
+    // Réinitialiser la position
+    notification.style.right = '-100%';
+    
+    // Appliquer le nouveau message
+    notification.className = `notification ${type}`;
     notification.textContent = message;
-    notification.classList.remove('hidden');
+    
+    // Forcer le recalcul des styles avant l'animation
+    void notification.offsetWidth;
+    
+    // Démarrer l'animation
+    notification.style.transition = '';
+    notification.classList.add('show');
     
     setTimeout(() => {
         notification.classList.remove('show');
-        setTimeout(() => notification.classList.add('hidden'), 300);
+        setTimeout(() => {
+            notification.classList.add('hidden');
+        }, 300);
     }, 3000);
 }
 
@@ -441,15 +458,18 @@ async function verifyPassword() {
             errorDiv.classList.remove('hidden');
             showNotification('Échec de l\'authentification', 'error');
         }
-    } catch (error) {
+        } catch (error) {
         console.error('Erreur:', error);
         const message = error.message.includes('Failed to fetch') 
             ? 'Problème de connexion au serveur'
             : error.message;
         
+        // Réinitialiser complètement le prompt
         errorDiv.textContent = `⚠️ ${message}`;
         errorDiv.classList.remove('hidden');
+        document.getElementById('passwordInput').value = '';
         showNotification(message, 'warning');
+
     } finally {
         verifyBtn.disabled = false;
         verifyText.classList.remove('hidden');
@@ -591,6 +611,9 @@ function createParticles(baseColor) {
 // AJOUT DE LA FONCTION MANQUANTE
 function handleCardClick(element) {
     currentWinner = element.dataset.position;
+    // Réinitialiser les erreurs précédentes
+    document.getElementById('passwordError').classList.add('hidden');
+    document.getElementById('passwordInput').value = '';
     showCustomPrompt();
 }
 
@@ -626,6 +649,12 @@ function showRewardDetail(reward) {
     content.querySelector('.text-6xl').innerHTML = reward.icon;
     content.querySelector('h2').textContent = reward.title;
     content.querySelector('p').textContent = reward.description;
+      // Réinitialiser le contenu du bouton
+      const button = content.querySelector('button');
+    if(button) {
+        button.innerHTML = 'Télécharger';
+        button.disabled = false;
+    }
 
     const buttonContainer = content.querySelector('.mt-8.flex.justify-center');
     
@@ -666,6 +695,13 @@ function showRewardDetail(reward) {
 function closeRewardDetail() {
     document.getElementById('rewardDetailModal').classList.add('hidden');
     currentDownloadKey = null;
+    
+    // Réinitialiser explicitement le bouton
+    const button = document.querySelector('#rewardDetailModal button');
+    if(button) {
+        button.innerHTML = 'Télécharger';
+        button.disabled = false;
+    }
 }
 
 function viewPackPreview() {
