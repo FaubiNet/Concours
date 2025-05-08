@@ -669,6 +669,8 @@ function showRewardDetail(reward) {
     Le fichier est en cours d'upload sur nos serveurs 🕒, et dès qu'il est prêt tu pourras le télécharger sans problème.<br><br>
     Nous nous excusons pour cette attente 🙏 mais ton lien sera disponible très bientôt (Estimation: 24h).<br><br>
     Merci pour ta patience, tu as eu la chance de débloquer ce pack rare 🔥 !
+    ⚠️ <strong>Disponible dans :</strong><br>
+                    <div id="countdownTimer" class="text-2xl font-mono my-4 text-cyan-400"></div>
 </p>
 
                 
@@ -686,11 +688,55 @@ function showRewardDetail(reward) {
                 Télécharger
             </button>
         `;
+          // Démarrez le compte à rebours
+          startCountdown();
     }
 
     currentDownloadKey = reward.downloadKey;
     modal.classList.remove('hidden');
 }
+
+
+// Ajoutez ces nouvelles fonctions
+let countdownInterval;
+
+function startCountdown() {
+    const countdownDate = localStorage.getItem('countdownStart');
+    if (!countdownDate) {
+        const now = new Date();
+        now.setHours(now.getHours() + 24);
+        localStorage.setItem('countdownStart', now.toISOString());
+    }
+
+    updateCountdown();
+    countdownInterval = setInterval(updateCountdown, 1000);
+}
+
+function updateCountdown() {
+    const countdownElement = document.getElementById('countdownTimer');
+    if (!countdownElement) return;
+
+    const targetDate = new Date(localStorage.getItem('countdownStart'));
+    const now = new Date();
+    const difference = targetDate - now;
+
+    if (difference <= 0) {
+        clearInterval(countdownInterval);
+        countdownElement.innerHTML = '✅ Disponible maintenant !';
+        return;
+    }
+
+    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+    countdownElement.innerHTML = `
+        ${hours.toString().padStart(2, '0')}h 
+        ${minutes.toString().padStart(2, '0')}m 
+        ${seconds.toString().padStart(2, '0')}s
+    `;
+}
+
 
 function closeRewardDetail() {
     document.getElementById('rewardDetailModal').classList.add('hidden');
@@ -718,8 +764,13 @@ function viewPackPreview() {
 }
 
 async function triggerDownload() {
-    if (!currentDownloadKey) return;
-    
+     if (currentDownloadKey === 'apps-hacking') {
+        const targetDate = new Date(localStorage.getItem('countdownStart'));
+        if (new Date() < targetDate) {
+            showNotification('⌛ Le fichier n\'est pas encore disponible !', 'warning');
+            return;
+        }
+    }
     const validatedPosition = sessionStorage.getItem('validatedPosition');
     
     // Blocage uniquement pour le pack spécifique
