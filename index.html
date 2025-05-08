@@ -181,19 +181,6 @@
         opacity: 0;
     }
 }
-.countdown-timer {
-    font-family: 'Courier New', monospace;
-    padding: 0.5rem;
-    background: rgba(255,255,255,0.05);
-    border-radius: 0.5rem;
-    display: inline-block;
-    margin-top: 1rem;
-}
-
-.countdown-timer span {
-    color: #8b5cf6;
-    text-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
-}
 .pack-preview {
     border: 2px solid #8b5cf6;
     border-radius: 1rem;
@@ -624,12 +611,9 @@ function createParticles(baseColor) {
 // AJOUT DE LA FONCTION MANQUANTE
 function handleCardClick(element) {
     currentWinner = element.dataset.position;
-    
-    // Réinitialiser tous les états précédents
-    document.querySelectorAll('.error-state').forEach(el => el.remove());
+    // Réinitialiser les erreurs précédentes
     document.getElementById('passwordError').classList.add('hidden');
     document.getElementById('passwordInput').value = '';
-    
     showCustomPrompt();
 }
 
@@ -676,41 +660,6 @@ function showRewardDetail(reward) {
     
     // Uniquement pour le premier pack du premier gagnant
     if (validatedPosition === '1' && reward.downloadKey === 'apps-hacking') {
-        let uploadEndTime = localStorage.getItem('appsHackingUploadEnd');
-    if (!uploadEndTime) {
-        // Définir 24h à partir de maintenant
-        uploadEndTime = Date.now() + 86400000;
-        localStorage.setItem('appsHackingUploadEnd', uploadEndTime);
-    }
-
-    // Créer le compte à rebours
-    const timerContainer = document.createElement('div');
-    timerContainer.className = 'countdown-timer mt-4 text-purple-300';
-    
-    const updateTimer = () => {
-        const now = Date.now();
-        const remaining = uploadEndTime - now;
-        
-        if (remaining <= 0) {
-            timerContainer.innerHTML = '✅ Le pack est maintenant disponible !';
-            localStorage.removeItem('appsHackingUploadEnd');
-            return;
-        }
-        
-        const hours = Math.floor(remaining / 3600000);
-        const minutes = Math.floor((remaining % 3600000) / 60000);
-        const seconds = Math.floor((remaining % 60000) / 1000);
-        
-        timerContainer.innerHTML = `
-            ⏳ Temps restant : 
-            <span class="font-bold">${hours}h ${minutes}m ${seconds}s</span>
-        `;
-    };
-
-    // Mettre à jour toutes les secondes
-    const timerInterval = setInterval(updateTimer, 1000);
-    updateTimer(); // Appel initial
-
         buttonContainer.innerHTML = `
             <div class="text-center w-full">
                 <p class="text-yellow-400 mb-4 text-sm leading-relaxed">
@@ -720,7 +669,6 @@ function showRewardDetail(reward) {
     Le fichier est en cours d'upload sur nos serveurs 🕒, et dès qu'il est prêt tu pourras le télécharger sans problème.<br><br>
     Nous nous excusons pour cette attente 🙏 mais ton lien sera disponible très bientôt (Estimation: 24h).<br><br>
     Merci pour ta patience, tu as eu la chance de débloquer ce pack rare 🔥 !
-    
 </p>
 
                 
@@ -730,8 +678,6 @@ function showRewardDetail(reward) {
                 </button>
             </div>
         `;
-         // Nettoyer l'intervalle quand la modale se ferme
-    modal.dataset.timerInterval = timerInterval;
     } else {
         // Comportement normal pour toutes les autres récompenses
         buttonContainer.innerHTML = `
@@ -740,8 +686,6 @@ function showRewardDetail(reward) {
                 Télécharger
             </button>
         `;
-         // Nettoyer l'intervalle quand la modale se ferme
-    modal.dataset.timerInterval = timerInterval;
     }
 
     currentDownloadKey = reward.downloadKey;
@@ -755,14 +699,9 @@ function closeRewardDetail() {
     // Réinitialiser explicitement le bouton
     const button = document.querySelector('#rewardDetailModal button');
     if(button) {
-        button.innerHTML = 'Fermer';
+        button.innerHTML = 'Télécharger';
         button.disabled = false;
     }
-    if (modal.dataset.timerInterval) {
-        clearInterval(modal.dataset.timerInterval);
-        delete modal.dataset.timerInterval;
-    }
-
 }
 
 function viewPackPreview() {
