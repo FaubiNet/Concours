@@ -1,79 +1,48 @@
-exports.handler = async (event) => {
-    const downloadMap = {
-        1: {
-            "apps-hacking": "https://www.mediafire.com/file/lz4u8np18fohlm5/Collection_Apps_Hacking.rar/file",
-            "python-pdf": "https://www.mediafire.com/file/q2fxpyovzx95gav/Apprendre_Python.rar/file",
-            "wifi-course": "https://www.mediafire.com/file/ugi21782gmyla3g/Cours_complet_Hack_Wifi.rar/file",
-            "html-css": "https://www.mediafire.com/file/6q5voeb0055jnz2/Cours_HTML-CSS-pdf.rar/file",
-            "ia-tips": "https://www.mediafire.com/file/18rqo306jnvbyd8/Astuces_IA_Cr%25C3%25A9ative.rar/file",
-            "image-hack": "https://www.mediafire.com/file/fp958ec40ltoemh/Hack_Avec_Image.rar/file"
-        },
-        2: {
-            "psycho-manip": "https://www.mediafire.com/file/5x6siw6mgg10efe/Psychologie_Manipulation.rar/file",
-            "langages-pack": "https://www.mediafire.com/file/4srrzwhehej12m0/Cours_Python-HTML-CSS-pdf.rar/file",
-            "avatars-ia": "https://www.mediafire.com/file/p5ghi0aqae0mvsh/Astuces_IA_Cr%25C3%25A9ative.rar/file"
-        },
-        3: {
-            "html-css-docs": "https://www.mediafire.com/file/ljsk326dkwaimin/Cours_HTML-CSS-pdf.rar/file",
-            "brute-force-list": "https://www.mediafire.com/file/b93bzheutlc3qtw/Liste_des_Mot_de_passe_Rockyou.rar/file",
-            "android-root": "https://www.mediafire.com/file/3wgkemqwxz54a70/Hack_avec_Android_Root.rar/file"
-        },
-        4: {
-            "terminal-apps": "https://www.mediafire.com/file/lz4u8np18fohlm5/Collection_Apps_Hacking.rar/file",
-            "photoshop-guide": "https://www.mediafire.com/file/jj3ci628d7ll0uo/Photoshop_guide.rar/file",
-            "wifi-debutant": "https://www.mediafire.com/file/j3kqo88z7nbbm9v/Hack_wifi_Pour_debutant.rar/file"
-        }
-    };
+const downloadMap = {
+    1: {
+        'ai-chat': 'https://www.mediafire.com/file/2olqpkmzmwkz61l/CREATE_OWN_CHAT_BOT_WEBSITE.zip/file',
+        'likes-vues': 'https://www.mediafire.com/folder/b2i98eypushsp/Like-Vues+Reseaux+sociaux',
+        'hack-android': 'https://drive.google.com/file/d/1UXIauIgH_rrYMJIcdo1igOTZvioFhNCL/view?usp=drivesdk',
+        'hack-whatsapp': 'https://www.mediafire.com/file/il64l4ov4oi1txf/WHATSAPP_HACK_NEW_METHOD.zip/file'
+    },
+    2: {
+        'numeros-virtuels': 'https://drive.google.com/drive/folders/1XDXIG8ymO3I9sigA-CmrE7POshzVJZLq?usp=sharing',
+        'darkweb': 'https://www.mediafire.com/file/i4fadf53inb3244/DARK_WEBB.pdf/file',
+        'hack-wifi': 'https://www.mediafire.com/file/ugi21782gmyla3g/Cours_complet_Hack_Wifi.rar/file'
+    },
+    3: {
+        'business-afrique': 'https://www.mediafire.com/file/81n0o50kmeisdgs/500_IDEES_DE_BUSINESS_POUR_ENTREPRENDRE_PDF.pdf/file',
+        'termux': 'https://www.mediafire.com/file/kzu37a2qqq1vqr1/termux.pdf/file',
+        'ai-drague': 'https://play.google.com/store/apps/details?id=com.wotoapp.woto'
+    },
+    4: {
+        'cours-dev': 'https://www.mediafire.com/file/4srrzwhehej12m0/Cours_Python-HTML-CSS-pdf.rar/file',
+        'bibliotheque': 'https://fr.z-library.sk/'
+    }
+};
 
-    try {
+  try {
         const { position, downloadKey } = JSON.parse(event.body);
         const validatedPosition = parseInt(position);
 
-        // Vérification spéciale pour le pack apps-hacking
-        if (validatedPosition === 1 && downloadKey === 'apps-hacking') {
-            return {
-                statusCode: 423,
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*' 
-                },
-                body: JSON.stringify({ 
-                    error: "📦 Félicitations ! Vous avez débloqué le pack complet 'Collection Apps Hacking'. Cependant, en raison de sa grande taille (beaucoup d'applications incluses), l'upload est toujours en cours. Nous finalisons le transfert pour que vous puissiez le télécharger en totalité. Merci de patienter environ 24h avant de réessayer. 🙏 Votre récompense arrive très bientôt, promis !"
-                })
-                
-            };
-        }
-
-        // Vérification standard
         if (!downloadMap[validatedPosition]?.[downloadKey]) {
             return {
-                statusCode: 403,
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*' 
-                },
-                body: JSON.stringify({ error: "Accès non autorisé" })
+                statusCode: 404,
+                body: JSON.stringify({ error: "Ressource non trouvée" })
             };
         }
 
         return {
             statusCode: 200,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/json'
-            },
             body: JSON.stringify({ 
-                url: downloadMap[validatedPosition][downloadKey] 
+                url: downloadMap[validatedPosition][downloadKey],
+                filename: getFileName(downloadMap[validatedPosition][downloadKey])
             })
         };
     } catch (error) {
         return {
             statusCode: 500,
-            headers: { 
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*' 
-            },
-            body: JSON.stringify({ error: "Erreur de serveur" })
+            body: JSON.stringify({ error: "Erreur serveur" })
         };
     }
 };

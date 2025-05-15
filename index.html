@@ -335,12 +335,30 @@
                 name: "1er Gagnant",
                 color: "from-amber-500 to-yellow-500",
                 rewards: [
-                    { title: "Collection Apps Hacking", icon: "💻", description: "Apps piratage WiFi, terminal Android, spying, DDoS, crypto", downloadKey: "apps-hacking" },
-                    { title: "Piratage par Image", icon: "🖼️", description: "Procédure complète piratage via envoi d'image", downloadKey: "image-hack" },
-                    { title: "PDF Python", icon: "📖", description: "Livres complets Python étape par étape", downloadKey: "python-pdf" },
-                    { title: "Cours Hacking WiFi", icon: "📶", description: "Méthodes avancées de piratage WiFi", downloadKey: "wifi-course" },
-                    { title: "PDF HTML/CSS", icon: "📚", description: "Guides détaillés développement web", downloadKey: "html-css" },
-                    { title: "Astuces IA", icon: "🤖", description: "Création avatars/vidéos rémunératrices", downloadKey: "ia-tips" }
+                    { 
+                        title: "Site AI Chat + Code Source", 
+                        icon: "🤖", 
+                        description: "Code source complet pour créer votre propre ChatGPT",
+                        downloadKey: "ai-chat" 
+                    },
+                    { 
+                        title: "Likes/Vues Gratuits", 
+                        icon: "🔥", 
+                        description: "Méthode complète pour boost Tiktok/Instagram",
+                        downloadKey: "likes-vues" 
+                    },
+                    { 
+                        title: "Piratage Android", 
+                        icon: "📱", 
+                        description: "Guide complet hacking téléphone Android",
+                        downloadKey: "hack-android" 
+                    },
+                    { 
+                        title: "Piratage WhatsApp", 
+                        icon: "🔐", 
+                        description: "Méthode avancée pour hacker WhatsApp",
+                        downloadKey: "hack-whatsapp" 
+                    }
                 ],
                 sound: "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3",
                 medal: "🥇"
@@ -349,10 +367,24 @@
                 name: "2e Gagnant",
                 color: "from-slate-500 to-blue-500",
                 rewards: [
-                    { title: "Psychologie Manipulation", icon: "🧠", description: "Apprendre à influencer et manipuler les gens", downloadKey: "psycho-manip" },
-                    { title: "PDF Python/HTML/CSS", icon: "📘", description: "Coffret complet langages programmation", downloadKey: "langages-pack" },
-                    { title: "Création Avatars IA", icon: "🎭", description: "Guide complet avatars animés avec IA", downloadKey: "avatars-ia" }
-            
+                    { 
+                        title: "Numéros Virtuels OTP", 
+                        icon: "📞", 
+                        description: "Générer des numéros virtuels pour vérifications",
+                        downloadKey: "numeros-virtuels" 
+                    },
+                    { 
+                        title: "Accès DarkWeb", 
+                        icon: "🌑", 
+                        description: "Guide complet pour accéder au DarkWeb",
+                        downloadKey: "darkweb" 
+                    },
+                    { 
+                        title: "Piratage WiFi", 
+                        icon: "📶", 
+                        description: "Tutoriel complet hacking WiFi en français",
+                        downloadKey: "hack-wifi" 
+                    }
                 ],
                 sound: "https://assets.mixkit.co/active_storage/sfx/2754/2754-preview.mp3",
                 medal: "🥈"
@@ -361,9 +393,24 @@
                 name: "3e Gagnant",
                 color: "from-orange-500 to-red-500",
                 rewards: [
-                    { title: "PDF HTML/CSS", icon: "📑", description: "Documentation technique détaillée", downloadKey: "html-css-docs"  },
-                    { title: "Liste Brute Force", icon: "🔑", description: "Dictionnaire de mots de passe optimisés", downloadKey: "brute-force-list" },
-                    { title: "Android Root Guide", icon: "📱", description: "Hacking complet avec Android rooté", downloadKey: "android-root" }
+                    { 
+                        title: "500 Business en Afrique", 
+                        icon: "📈", 
+                        description: "Livre complet avec idées business fonctionnelles",
+                        downloadKey: "business-afrique" 
+                    },
+                    { 
+                        title: "Cours Termux Pro", 
+                        icon: "💻", 
+                        description: "Maîtrisez Termux comme un hacker",
+                        downloadKey: "termux" 
+                    },
+                    { 
+                        title: "AI Dragueur Pro", 
+                        icon: "💘", 
+                        description: "Application IA pour draguer comme un pro",
+                        downloadKey: "ai-drague" 
+                    }
                 ],
                 sound: "https://assets.mixkit.co/active_storage/sfx/2755/2755-preview.mp3",
                 medal: "🥉"
@@ -372,16 +419,24 @@
                 name: "4e Gagnant",
                 color: "from-green-500 to-emerald-500",
                 rewards: [
-                    { title: "Terminal + Crypto Apps", icon: "📲", description: "Outils Android essentiels", downloadKey: "terminal-apps" },
-                    { title: "Mini Guide Photoshop", icon: "🖌️", description: "Bases du montage photo pro", downloadKey: "photoshop-guide" },
-                    { title: "WiFi Débutant", icon: "📡", description: "Introduction au hacking WiFi" , downloadKey: "wifi-debutant"}
+                    { 
+                        title: "Cours Développement", 
+                        icon: "👨💻", 
+                        description: "Python, HTML et CSS de A à Z",
+                        downloadKey: "cours-dev" 
+                    },
+                    { 
+                        title: "Bibliothèque Hacking", 
+                        icon: "📚", 
+                        description: "Livres premium gratuits (Z-Library)",
+                        downloadKey: "bibliotheque" 
+                    }
                 ],
                 sound: "https://assets.mixkit.co/active_storage/sfx/2753/2753-preview.mp3",
                 medal: "🏅"
             }
         };
 
-        
 
         let currentWinner;
 
@@ -642,55 +697,25 @@ function handleCardClick(element) {
 let currentDownloadKey = null;
 
 function showRewardDetail(reward) {
-    const modal = document.getElementById('rewardDetailModal');
-    const content = document.getElementById('rewardDetailContent');
-    const validatedPosition = sessionStorage.getItem('validatedPosition');
+            const modal = document.getElementById('rewardDetailModal');
+            const content = document.getElementById('rewardDetailContent');
 
-    content.querySelector('.text-6xl').innerHTML = reward.icon;
-    content.querySelector('h2').textContent = reward.title;
-    content.querySelector('p').textContent = reward.description;
-      // Réinitialiser le contenu du bouton
-      const button = content.querySelector('button');
-    if(button) {
-        button.innerHTML = 'Fermer';
-        button.disabled = false;
-    }
+            content.querySelector('.text-6xl').innerHTML = reward.icon;
+            content.querySelector('h2').textContent = reward.title;
+            content.querySelector('p').textContent = reward.description;
 
-    const buttonContainer = content.querySelector('.mt-8.flex.justify-center');
-    
-    // Uniquement pour le premier pack du premier gagnant
-    if (validatedPosition === '1' && reward.downloadKey === 'apps-hacking') {
-        buttonContainer.innerHTML = `
-            <div class="text-center w-full">
-                <p class="text-yellow-400 mb-4 text-sm leading-relaxed">
-    ⚠️ <strong>Bonne nouvelle, tu es éligible à ce pack exclusif complet !</strong><br><br>
-    Cependant, ce pack <strong>"Collection Apps Hacking"</strong> est exceptionnellement volumineux 🚀 car il contient 
-    plusieurs applications puissantes et on ne voulait rien enlever pour t'offrir l'intégralité.<br><br>
-    Le fichier est en cours d'upload sur nos serveurs 🕒, et dès qu'il est prêt tu pourras le télécharger sans problème.<br><br>
-    Nous nous excusons pour cette attente 🙏 mais ton lien sera disponible très bientôt (Estimation: 24h).<br><br>
-    Merci pour ta patience, tu as eu la chance de débloquer ce pack rare 🔥 !
-</p>
-
-                
-                <button onclick="viewPackPreview()" 
-                        class="bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 px-6 py-2 rounded-lg font-bold transition-all">
-                    📸 Voir l'aperçu du pack
+            // Nouveau code simplifié pour le bouton de téléchargement
+            const buttonContainer = content.querySelector('.mt-8.flex.justify-center');
+            buttonContainer.innerHTML = `
+                <button onclick="triggerDownload()" 
+                        class="bg-gradient-to-r from-cyan-600 to-emerald-600 hover:opacity-90 px-8 py-3 rounded-lg font-bold transition-all">
+                    Télécharger
                 </button>
-            </div>
-        `;
-    } else {
-        // Comportement normal pour toutes les autres récompenses
-        buttonContainer.innerHTML = `
-            <button onclick="triggerDownload()" 
-                    class="bg-gradient-to-r from-cyan-600 to-emerald-600 hover:opacity-90 px-8 py-3 rounded-lg font-bold transition-all">
-                Télécharger
-            </button>
-        `;
-    }
+            `;
 
-    currentDownloadKey = reward.downloadKey;
-    modal.classList.remove('hidden');
-}
+            currentDownloadKey = reward.downloadKey;
+            modal.classList.remove('hidden');
+        }
 
 function closeRewardDetail() {
     document.getElementById('rewardDetailModal').classList.add('hidden');
