@@ -147,12 +147,11 @@
     </div>
 
     <script>
-            const ADMIN_TOKEN = "Bearer BlessHack"; // Doit correspondre à Netlify.toml
 
         let currentEditableWinner = null;
 
         // Gestion Authentification
-      async function adminLogin() {
+  async function adminLogin() {
     const password = document.getElementById('adminPassword').value;
     const errorDiv = document.getElementById('adminError');
     
@@ -172,18 +171,12 @@
         
         if(data.valid) {
             localStorage.setItem('adminAuth', 'true');
-            localStorage.setItem('adminToken', process.env.ADMIN_TOKEN);
-            // Ajouter la visibilité du dashboard
             document.getElementById('adminLogin').classList.add('hidden');
             document.getElementById('adminDashboard').classList.remove('hidden');
             loadAdminData();
-        } else {
-            errorDiv.textContent = "Accès refusé !";
-            errorDiv.classList.remove('hidden');
         }
     } catch (error) {
-        console.error('Error:', error);
-        errorDiv.textContent = "Erreur de connexion";
+        errorDiv.textContent = "Accès refusé ou erreur de connexion";
         errorDiv.classList.remove('hidden');
     }
 }
@@ -198,13 +191,9 @@
     try {
         const token = localStorage.getItem('adminToken');
         
-        const [winnersRes, downloadsRes] = await Promise.all([
-            fetch('/.netlify/functions/verify-password', {
-                headers: { 'Authorization': token }
-            }),
-            fetch('/.netlify/functions/get-download', {
-                headers: { 'Authorization': token }
-            })
+         const [winnersRes, downloadsRes] = await Promise.all([
+            fetch('/.netlify/functions/verify-password'),
+            fetch('/.netlify/functions/get-download')
         ]);
 
         if (!winnersRes.ok || !downloadsRes.ok) {

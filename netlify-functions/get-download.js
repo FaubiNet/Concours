@@ -1,4 +1,3 @@
-const { verifyAdmin } = require('./admin-auth');
 let downloadConfig = require('./download-config.json');
 
 const getFileName = (url) => {
@@ -12,8 +11,10 @@ const getFileName = (url) => {
 };
 
 exports.handler = async (event) => {
-    if(!['GET', 'POST'].includes(event.httpMethod) && !verifyAdmin(event)) {
-        return { statusCode: 401, body: 'Unauthorized' };
+       if (event.httpMethod === 'PUT') {
+        if (!event.body.password === process.env.ADMIN_PASSWORD) {
+            return { statusCode: 401 };
+        }
     }
 
     try {

@@ -12,4 +12,3 @@
 
 [context.production.environment]
   ADMIN_PASSWORD = "AdminHack2025"
-  ADMIN_TOKEN = "Bearer BlessHack"
