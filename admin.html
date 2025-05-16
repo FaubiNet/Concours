@@ -147,11 +147,13 @@
     </div>
 
     <script>
-        const ADMIN_TOKEN = "Bearer Hacker";
         let currentEditableWinner = null;
 
         // Gestion Authentification
-       async function adminLogin() {
+      async function adminLogin() {
+    const password = document.getElementById('adminPassword').value;
+    const errorDiv = document.getElementById('adminError');
+    
     try {
         const response = await fetch('/.netlify/functions/verify-password', {
             method: 'POST',
@@ -165,32 +167,25 @@
             })
         });
 
-        let data;
-        try {
-            data = await response.json();
-        } catch (e) {
-            throw new Error('Réponse serveur invalide');
-        }
+        const data = await response.json();
 
         if (!response.ok) throw new Error(data.error || 'Erreur serveur');
-            .then(response => response.json())
-            .then(data => {
-                if(data.valid) {
-                    localStorage.setItem('adminAuth', 'true');
-                    document.getElementById('adminLogin').classList.add('hidden');
-                    document.getElementById('adminDashboard').classList.remove('hidden');
-                    loadAdminData();
-                } else {
-                    errorDiv.textContent = "Accès refusé !";
-                    errorDiv.classList.remove('hidden');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                errorDiv.textContent = "Erreur de connexion";
-                errorDiv.classList.remove('hidden');
-            });
+
+        if(data.valid) {
+            localStorage.setItem('adminAuth', 'true');
+            document.getElementById('adminLogin').classList.add('hidden');
+            document.getElementById('adminDashboard').classList.remove('hidden');
+            loadAdminData();
+        } else {
+            errorDiv.textContent = "Accès refusé !";
+            errorDiv.classList.remove('hidden');
         }
+    } catch (error) {
+        console.error('Error:', error);
+        errorDiv.textContent = "Erreur de connexion";
+        errorDiv.classList.remove('hidden');
+    }
+}
 
         function logoutAdmin() {
             localStorage.removeItem('adminAuth');
@@ -258,8 +253,8 @@ function renderWinners(winners) {
         </div>
     // Après (correction)
 `).join('')}
-</div>`; 
-
+            </div>` // FERMETURE MANQUANTE
+        ).join('');
 }
 async function addRewardPrompt(position) {
     const title = prompt('Titre de la récompense :');
