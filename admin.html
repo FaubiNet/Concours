@@ -159,9 +159,7 @@
     try {
         const response = await fetch('/.netlify/functions/verify-password', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 admin: true,
                 password: password 
@@ -169,15 +167,17 @@
         });
 
         const data = await response.json();
-
+        
         if (!response.ok) throw new Error(data.error || 'Erreur serveur');
-
+        
         if(data.valid) {
             localStorage.setItem('adminAuth', 'true');
-            document.getElementById('adminLogin').classList.add('hidden');
-            document.getElementById('adminDashboard').classList.remove('hidden');
+            // Ajouter le token dans le stockage local
+            localStorage.setItem('adminToken', process.env.ADMIN_TOKEN); 
+            // Rediriger vers le dashboard
             loadAdminData();
-        } else {
+        }
+    } else {
             errorDiv.textContent = "Accès refusé !";
             errorDiv.classList.remove('hidden');
         }
@@ -186,7 +186,7 @@
         errorDiv.textContent = "Erreur de connexion";
         errorDiv.classList.remove('hidden');
     }
-}
+
 
         function logoutAdmin() {
             localStorage.removeItem('adminAuth');
@@ -194,16 +194,26 @@
         }
 
         // Chargement des données
-        async function loadAdminData() {
-            try {
-                const [winnersRes, downloadsRes] = await Promise.all([
-                    fetch('/.netlify/functions/verify-password', {
-                        headers: { 'Authorization': ADMIN_TOKEN }
-                    }),
-                    fetch('/.netlify/functions/get-download', {
-                        headers: { 'Authorization': ADMIN_TOKEN }
-                    })
-                ]);
+  async function loadAdminData() {
+    try {
+        const token = localStorage.getItem('adminToken');
+        
+        const [winnersRes, downloadsRes] = await Promise.all([
+            fetch('/.netlify/functions/verify-password', {
+                headers: { 
+                    'Authorization': token 
+                }
+            }),
+            fetch('/.netlify/functions/get-download', {
+                headers: { 
+                    'Authorization': token 
+                }
+            })
+        ]);
+        // ...
+    }
+    // ... catch
+}
 
                 const winnersData = await winnersRes.json();
                 const downloadsData = await downloadsRes.json();

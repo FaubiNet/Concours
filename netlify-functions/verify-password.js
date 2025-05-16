@@ -22,11 +22,11 @@ exports.handler = async (event) => {
 if (event.httpMethod !== 'GET' && !verifyAdmin(event)) {
     return { statusCode: 401, body: JSON.stringify({ error: "Accès non autorisé" }) };
 }
-
-    try {
+try {
         const data = event.body ? JSON.parse(event.body) : {};
-        
-        if(data.admin) {
+
+        // Gestion de la connexion admin en premier
+        if (data.admin) {
             return {
                 statusCode: 200,
                 body: JSON.stringify({
@@ -34,6 +34,12 @@ if (event.httpMethod !== 'GET' && !verifyAdmin(event)) {
                 })
             };
         }
+
+        // Vérification admin pour les méthodes non-GET
+        if (event.httpMethod !== 'GET' && !verifyAdmin(event)) {
+            return { statusCode: 401, body: JSON.stringify({ error: "Accès non autorisé" }) };
+        }
+
 
         // Opérations CRUD
         switch(event.httpMethod) {
