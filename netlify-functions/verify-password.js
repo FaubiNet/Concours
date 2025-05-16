@@ -25,14 +25,15 @@ exports.handler = async (event) => {
         const data = event.body ? JSON.parse(event.body) : {};
         
         // Login Admin
-        if(data.admin) {
-            return {
-                statusCode: 200,
-                body: JSON.stringify({
-                    valid: data.password === process.env.ADMIN_PASSWORD
-                })
-            };
-        }
+       if (data.admin) {
+    return {
+        statusCode: 200,
+        body: JSON.stringify({
+            // Comparaison avec la variable d'environnement
+            valid: data.password === process.env.ADMIN_PASSWORD
+        })
+    };
+}
 
         // Opérations CRUD
         switch(event.httpMethod) {
