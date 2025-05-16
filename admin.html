@@ -160,8 +160,7 @@
         const response = await fetch('/.netlify/functions/verify-password', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': ADMIN_TOKEN
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ 
                 admin: true,

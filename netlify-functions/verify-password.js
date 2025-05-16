@@ -16,24 +16,24 @@ const passwords = {
 };
 
 exports.handler = async (event) => {
+    
     // Vérification admin pour les méthodes non-GET
-    if(!['GET', 'POST'].includes(event.httpMethod) && !verifyAdmin(event)) {
-        return { statusCode: 401, body: JSON.stringify({ error: "Non autorisé" }) };
-    }
+ // Au début du handler
+if (event.httpMethod !== 'GET' && !verifyAdmin(event)) {
+    return { statusCode: 401, body: JSON.stringify({ error: "Accès non autorisé" }) };
+}
 
     try {
         const data = event.body ? JSON.parse(event.body) : {};
         
-        // Login Admin
-       if (data.admin) {
-    return {
-        statusCode: 200,
-        body: JSON.stringify({
-            // Comparaison avec la variable d'environnement
-            valid: data.password === process.env.ADMIN_PASSWORD
-        })
-    };
-}
+        if(data.admin) {
+            return {
+                statusCode: 200,
+                body: JSON.stringify({
+                    valid: data.password === process.env.ADMIN_PASSWORD
+                })
+            };
+        }
 
         // Opérations CRUD
         switch(event.httpMethod) {
