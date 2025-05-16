@@ -746,12 +746,6 @@ async function triggerDownload() {
     if (!currentDownloadKey) return;
     
     const validatedPosition = sessionStorage.getItem('validatedPosition');
-    
-    // Blocage uniquement pour le pack spécifique
-    if (validatedPosition === '1' && currentDownloadKey === 'apps-hacking') {
-        showNotification('🚧 Le transfert est en cours - merci de patienter ! (Estimation: 24h)', 'warning');
-        return;
-    }
 
     try {
         await handleRewardClick(currentDownloadKey);

@@ -1,10 +1,10 @@
 exports.handler = async (event) => {
-    const passwords = {
-        1: "kingsupreme123",
-        2: "prohacker456", 
-        3: "evolve789",
-        4: "starter000"
-    };
+const passwords = {
+    1: "rootAccess2025",
+    2: "darkModeHacker",
+    3: "binaryBeast321",
+    4: "cyberStarterX"
+};
 
     try {
         const data = JSON.parse(event.body);

@@ -1,10 +1,10 @@
 exports.handler = async (event) => {
-    const passwords = {
-        1: "supreme123",
-        2: "prohacker456", 
-        3: "evolve789",
-        4: "starter000"
-    };
+const passwords = {
+    1: "rootAccess2025",
+    2: "darkModeHacker",
+    3: "binaryBeast321",
+    4: "cyberStarterX"
+};
 
     try {
         const data = JSON.parse(event.body);
@@ -12,11 +12,20 @@ exports.handler = async (event) => {
         
         return {
             statusCode: 200,
-            body: JSON.stringify({ valid: isCorrect })
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                valid: isCorrect,
+                position: data.position
+            })
         };
     } catch (error) {
         return {
             statusCode: 500,
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ error: "Erreur de vérification" })
         };
     }
