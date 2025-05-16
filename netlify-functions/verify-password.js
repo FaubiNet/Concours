@@ -22,11 +22,10 @@ if (event.httpMethod !== 'GET' && !verifyAdmin(event)) {
     return { statusCode: 401, body: JSON.stringify({ error: "Accès non autorisé" }) };
 }
 
-    exports.handler = async (event) => {
     try {
         const data = event.body ? JSON.parse(event.body) : {};
 
-        // Vérification admin
+        // Gestion login admin en premier
         if (data.admin) {
             return {
                 statusCode: 200,
@@ -36,39 +35,44 @@ if (event.httpMethod !== 'GET' && !verifyAdmin(event)) {
             };
         }
 
-        // Vérification mot de passe pour les opérations CRUD
+        // Vérification mot de passe pour les autres opérations
         if (event.httpMethod !== 'GET') {
             if (data.password !== process.env.ADMIN_PASSWORD) {
                 return { statusCode: 401, body: JSON.stringify({ error: "Accès non autorisé" }) };
             }
         }
 
+     
+
+
         // Opérations CRUD
         switch(event.httpMethod) {
-            case 'GET':
-                return { 
-                    statusCode: 200, 
-                    body: JSON.stringify(winners) 
-                };
+        case 'GET':
+            return { 
+                statusCode: 200, 
+                body: JSON.stringify(winners) 
+            };
 
-            case 'PUT':
-                const existingData = winners[data.position] || {};
-                winners[data.position] = { ...existingData, ...data };
-                saveWinners();
-                return {
-                    statusCode: 200,
-                    body: JSON.stringify(winners)
-                };
+        // Modifier le handler PUT pour fusionner les données existantes
+case 'PUT':
+    const existingData = winners[data.position] || {};
+    winners[data.position] = { ...existingData, ...data };
+    saveWinners();
+    return {
+        statusCode: 200,
+        body: JSON.stringify(winners),
+        headers: { 'Content-Type': 'application/json' }
+    };
 
-            case 'DELETE':
-                delete winners[data.position];
-                saveWinners();
-                return { 
-                    statusCode: 200, 
-                    body: JSON.stringify(winners) 
-                };
+        case 'DELETE':
+            delete winners[data.position];
+            saveWinners(); // Ajouter cette ligne
+            return { 
+                statusCode: 200, 
+                body: JSON.stringify(winners) 
+            };
 
-            default:
+            default: // Vérification mot de passe normal
                 const isValid = passwords[data.position] === data.password;
                 return {
                     statusCode: 200,

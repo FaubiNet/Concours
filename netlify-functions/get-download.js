@@ -20,28 +20,23 @@ exports.handler = async (event) => {
     try {
         const body = event.body ? JSON.parse(event.body) : {};
         
-        if (event.httpMethod === 'PUT') {
-            if (body.password !== process.env.ADMIN_PASSWORD) {
-                return { statusCode: 401 };
-            }
-        }
-
         switch(event.httpMethod) {
-            case 'GET':
-                const position = event.queryStringParameters.position;
-                const downloadKey = event.queryStringParameters.downloadKey;
-                if (position && downloadKey) {
-                    return {
-                        statusCode: 200,
-                        body: JSON.stringify({
-                            url: downloadConfig[position][downloadKey],
-                            filename: getFileName(downloadConfig[position][downloadKey])
-                        })
-                    };
-                }
-                return { statusCode: 400, body: JSON.stringify({ error: 'Paramètres manquants' }) };
+           case 'GET':
+    const position = event.queryStringParameters.position;
+    const downloadKey = event.queryStringParameters.downloadKey;
+    if (position && downloadKey) {
+        return {
+            statusCode: 200,
+            body: JSON.stringify({
+                url: downloadConfig[position][downloadKey],
+                filename: getFileName(downloadConfig[position][downloadKey])
+            })
+        };
+    }
+    return { statusCode: 400, body: JSON.stringify({ error: 'Paramètres manquants' }) };
 
             case 'PUT':
+                if(!verifyAdmin(event)) return { statusCode: 401 };
                 downloadConfig = body;
                 return { statusCode: 200, body: JSON.stringify(downloadConfig) };
 
