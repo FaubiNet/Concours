@@ -1,4 +1,13 @@
-exports.handler = async (event) => {
+const fs = require('fs');
+const path = require('path');
+const { verifyAdmin } = require('./admin-auth');
+let winners = require('./winners-data.json');
+
+function saveWinners() {
+    const filePath = path.join(__dirname, 'winners-data.json');
+    fs.writeFileSync(filePath, JSON.stringify(winners, null, 2));
+}
+
 const passwords = {
     1: "rootAccess2025",
     2: "darkModeHacker",
@@ -6,27 +15,66 @@ const passwords = {
     4: "cyberStarterX"
 };
 
+exports.handler = async (event) => {
+    // Vérification admin pour les méthodes non-GET
+    if(!['GET', 'POST'].includes(event.httpMethod) && !verifyAdmin(event)) {
+        return { statusCode: 401, body: JSON.stringify({ error: "Non autorisé" }) };
+    }
+
     try {
-        const data = JSON.parse(event.body);
-        const isCorrect = passwords[data.position] === data.password;
+        const data = event.body ? JSON.parse(event.body) : {};
         
-        return {
-            statusCode: 200,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 
-                valid: isCorrect,
-                position: data.position
-            })
-        };
+        // Login Admin
+        if(data.admin) {
+            return {
+                statusCode: 200,
+                body: JSON.stringify({
+                    valid: data.password === process.env.ADMIN_PASSWORD
+                })
+            };
+        }
+
+        // Opérations CRUD
+        switch(event.httpMethod) {
+        case 'GET':
+            return { 
+                statusCode: 200, 
+                body: JSON.stringify(winners) 
+            };
+
+        // Modifier le handler PUT pour fusionner les données existantes
+case 'PUT':
+    const existingData = winners[data.position] || {};
+    winners[data.position] = { ...existingData, ...data };
+    saveWinners();
+    return {
+        statusCode: 200,
+        body: JSON.stringify(winners),
+        headers: { 'Content-Type': 'application/json' }
+    };
+
+        case 'DELETE':
+            delete winners[data.position];
+            saveWinners(); // Ajouter cette ligne
+            return { 
+                statusCode: 200, 
+                body: JSON.stringify(winners) 
+            };
+
+            default: // Vérification mot de passe normal
+                const isValid = passwords[data.position] === data.password;
+                return {
+                    statusCode: 200,
+                    body: JSON.stringify({ 
+                        valid: isValid,
+                        position: data.position
+                    })
+                };
+        }
     } catch (error) {
         return {
             statusCode: 500,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ error: "Erreur de vérification" })
+            body: JSON.stringify({ error: error.message })
         };
     }
 };

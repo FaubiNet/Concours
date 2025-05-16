@@ -1,3 +1,15 @@
 [build]
-  functions = "netlify-functions"
-  publish = "."
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["netlify/functions/*.json"]
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin.html"
+  status = 200
+
+[context.production.environment]
+  ADMIN_PASSWORD = "AdminHack2025"
+  ADMIN_TOKEN = "Bearer BlessHack"
