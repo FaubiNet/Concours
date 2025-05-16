@@ -11,10 +11,8 @@ const getFileName = (url) => {
 };
 
 exports.handler = async (event) => {
-       if (event.httpMethod === 'PUT') {
-        if (!event.body.password === process.env.ADMIN_PASSWORD) {
-            return { statusCode: 401 };
-        }
+    if(!['GET', 'POST'].includes(event.httpMethod) && !verifyAdmin(event)) {
+        return { statusCode: 401, body: 'Unauthorized' };
     }
 
     try {

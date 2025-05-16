@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { verifyAdmin } = require('./admin-auth');
 let winners = require('./winners-data.json');
 
 function saveWinners() {
@@ -15,17 +16,16 @@ const passwords = {
 };
 
 exports.handler = async (event) => {
-
+    
     // Vérification admin pour les méthodes non-GET
  // Au début du handler
 if (event.httpMethod !== 'GET' && !verifyAdmin(event)) {
     return { statusCode: 401, body: JSON.stringify({ error: "Accès non autorisé" }) };
 }
-
-    try {
+try {
         const data = event.body ? JSON.parse(event.body) : {};
 
-        // Gestion login admin en premier
+        // Gestion de la connexion admin en premier
         if (data.admin) {
             return {
                 statusCode: 200,
@@ -35,14 +35,10 @@ if (event.httpMethod !== 'GET' && !verifyAdmin(event)) {
             };
         }
 
-        // Vérification mot de passe pour les autres opérations
-        if (event.httpMethod !== 'GET') {
-            if (data.password !== process.env.ADMIN_PASSWORD) {
-                return { statusCode: 401, body: JSON.stringify({ error: "Accès non autorisé" }) };
-            }
+        // Vérification admin pour les méthodes non-GET
+        if (event.httpMethod !== 'GET' && !verifyAdmin(event)) {
+            return { statusCode: 401, body: JSON.stringify({ error: "Accès non autorisé" }) };
         }
-
-     
 
 
         // Opérations CRUD
