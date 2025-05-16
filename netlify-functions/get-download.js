@@ -20,17 +20,19 @@ exports.handler = async (event) => {
         const body = event.body ? JSON.parse(event.body) : {};
         
         switch(event.httpMethod) {
-            case 'GET':
-                if(body.position && body.downloadKey) {
-                    return {
-                        statusCode: 200,
-                        body: JSON.stringify({
-                            url: downloadConfig[body.position]?.[body.downloadKey],
-                            filename: getFileName(downloadConfig[body.position]?.[body.downloadKey])
-                        })
-                    };
-                }
-                return { statusCode: 200, body: JSON.stringify(downloadConfig) };
+           case 'GET':
+    const position = event.queryStringParameters.position;
+    const downloadKey = event.queryStringParameters.downloadKey;
+    if (position && downloadKey) {
+        return {
+            statusCode: 200,
+            body: JSON.stringify({
+                url: downloadConfig[position][downloadKey],
+                filename: getFileName(downloadConfig[position][downloadKey])
+            })
+        };
+    }
+    return { statusCode: 400, body: JSON.stringify({ error: 'Paramètres manquants' }) };
 
             case 'PUT':
                 if(!verifyAdmin(event)) return { statusCode: 401 };

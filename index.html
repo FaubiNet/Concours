@@ -581,11 +581,10 @@ async function handleRewardClick(downloadKey) {
         `;
         downloadBtn.disabled = true;
 
-        const response = await fetch('/.netlify/functions/get-download', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ position: validatedPosition, downloadKey })
-        });
+        // Après (correction)
+const response = await fetch(`/.netlify/functions/get-download?position=${validatedPosition}&downloadKey=${encodeURIComponent(downloadKey)}`, {
+    method: 'GET'
+});
 
         if (!response.ok) {
             const error = await response.json();

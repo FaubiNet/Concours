@@ -151,21 +151,28 @@
         let currentEditableWinner = null;
 
         // Gestion Authentification
-        function adminLogin() {
-            const password = document.getElementById('adminPassword').value;
-            const errorDiv = document.getElementById('adminError');
-
-            fetch('/.netlify/functions/verify-password', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': ADMIN_TOKEN
-                },
-                body: JSON.stringify({ 
-                    admin: true,
-                    password: password 
-                })
+       async function adminLogin() {
+    try {
+        const response = await fetch('/.netlify/functions/verify-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': ADMIN_TOKEN
+            },
+            body: JSON.stringify({ 
+                admin: true,
+                password: password 
             })
+        });
+
+        let data;
+        try {
+            data = await response.json();
+        } catch (e) {
+            throw new Error('Réponse serveur invalide');
+        }
+
+        if (!response.ok) throw new Error(data.error || 'Erreur serveur');
             .then(response => response.json())
             .then(data => {
                 if(data.valid) {
@@ -249,7 +256,9 @@ function renderWinners(winners) {
             </div>
             <div class="text-xs text-cyan-400 mt-1">Clé: ${reward.downloadKey}</div>
         </div>
-    `).join('')}
+    // Après (correction)
+`).join('')}
+</div>`; 
 
 }
 async function addRewardPrompt(position) {
