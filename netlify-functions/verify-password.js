@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const { verifyAdmin } = require('./admin-auth');
 let winners = require('./winners-data.json');
 
 function saveWinners() {
