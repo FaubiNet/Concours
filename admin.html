@@ -33,10 +33,10 @@
             <input id="adminPassword" type="password" 
                    class="w-full bg-gray-700 rounded-lg p-3 mb-4 focus:ring-2 focus:ring-cyan-500 outline-none"
                    placeholder="Mot de passe maître">
-            <button onclick="adminLogin()"
-                    class="w-full bg-cyan-600 hover:bg-cyan-700 py-3 rounded-lg font-bold transition-colors">
-                Accéder au Dashboard
-            </button>
+            <button onclick="adminLogin()" 
+        class="w-full bg-cyan-600 hover:bg-cyan-700 py-3 rounded-lg font-bold transition-colors">
+    Accéder au Dashboard
+</button>
         </div>
     </div>
 
@@ -172,12 +172,12 @@
         
         if(data.valid) {
             localStorage.setItem('adminAuth', 'true');
-            // Ajouter le token dans le stockage local
-            localStorage.setItem('adminToken', process.env.ADMIN_TOKEN); 
-            // Rediriger vers le dashboard
+            localStorage.setItem('adminToken', process.env.ADMIN_TOKEN);
+            // Ajouter la visibilité du dashboard
+            document.getElementById('adminLogin').classList.add('hidden');
+            document.getElementById('adminDashboard').classList.remove('hidden');
             loadAdminData();
-        }
-    } else {
+        } else {
             errorDiv.textContent = "Accès refusé !";
             errorDiv.classList.remove('hidden');
         }
@@ -186,7 +186,7 @@
         errorDiv.textContent = "Erreur de connexion";
         errorDiv.classList.remove('hidden');
     }
-
+}
 
         function logoutAdmin() {
             localStorage.removeItem('adminAuth');
@@ -200,30 +200,27 @@
         
         const [winnersRes, downloadsRes] = await Promise.all([
             fetch('/.netlify/functions/verify-password', {
-                headers: { 
-                    'Authorization': token 
-                }
+                headers: { 'Authorization': token }
             }),
             fetch('/.netlify/functions/get-download', {
-                headers: { 
-                    'Authorization': token 
-                }
+                headers: { 'Authorization': token }
             })
         ]);
-        // ...
-    }
-    // ... catch
-}
 
-                const winnersData = await winnersRes.json();
-                const downloadsData = await downloadsRes.json();
-
-                renderWinners(winnersData);
-                renderDownloads(downloadsData);
-            } catch (error) {
-                console.error('Erreur:', error);
-            }
+        if (!winnersRes.ok || !downloadsRes.ok) {
+            throw new Error('Erreur de chargement des données');
         }
+
+        const winnersData = await winnersRes.json();
+        const downloadsData = await downloadsRes.json();
+
+        renderWinners(winnersData);
+        renderDownloads(downloadsData);
+    } catch (error) {
+        console.error('Erreur:', error);
+        showNotification('Échec du chargement des données', 'error');
+    }
+}
 
 function renderWinners(winners) {
     const container = document.getElementById('winnersList');
