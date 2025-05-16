@@ -187,18 +187,18 @@
         }
 
         // Chargement des données
-  async function loadAdminData() {
+async function loadAdminData() {
     try {
-        const token = localStorage.getItem('adminToken');
+        const password = localStorage.getItem('adminPassword');
         
-         const [winnersRes, downloadsRes] = await Promise.all([
-            fetch('/.netlify/functions/verify-password'),
+        const [winnersRes, downloadsRes] = await Promise.all([
+            fetch('/.netlify/functions/verify-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: process.env.ADMIN_PASSWORD })
+            }),
             fetch('/.netlify/functions/get-download')
         ]);
-
-        if (!winnersRes.ok || !downloadsRes.ok) {
-            throw new Error('Erreur de chargement des données');
-        }
 
         const winnersData = await winnersRes.json();
         const downloadsData = await downloadsRes.json();
@@ -207,7 +207,6 @@
         renderDownloads(downloadsData);
     } catch (error) {
         console.error('Erreur:', error);
-        showNotification('Échec du chargement des données', 'error');
     }
 }
 
